@@ -1,0 +1,97 @@
+.job-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+}
+
+.job-card-header h3 {
+  font-size: 1.25rem;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.company-info {
+  color: var(--primary); /* Blue highlight for company as seen in dashboard */
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.job-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0 24px 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.meta-left {
+  display: flex;
+  gap: 15px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.salary-badge {
+  background: #ecfdf5; /* Light green background */
+  color: #059669;    /* Darker green text */
+  padding: 4px 12px;
+  border-radius: 9999px; /* Fully rounded pill shape */
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 8px;
+  border: 1px solid #d1fae5;
+}
+
+body.dark .salary-badge {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+/* Updated Apply Button Styles */
+.apply-btn {
+  background: var(--primary); /* Uses your blue brand color */
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%; /* Makes it full width like your screenshot */
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  margin-top: auto; /* Pushes button to bottom of card */
+}
+
+.apply-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.apply-btn:active {
+  transform: translateY(0);
+}
+
+/* Specific Dark Mode Glow */
+body.dark .apply-btn {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+}
+
+body.dark .apply-btn:hover {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  box-shadow: 0 6px 25px rgba(59, 130, 246, 0.5);
+}

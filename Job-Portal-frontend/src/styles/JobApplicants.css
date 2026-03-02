@@ -1,0 +1,64 @@
+/* Container */
+.applicants-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Page Title */
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #1f2937;
+}
+
+/* Loading & No Applicants */
+.loading, .no-applicants {
+  text-align: center;
+  font-size: 16px;
+  color: #6b7280; /* muted gray */
+}
+
+/* Applicant Card */
+.applicant-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  padding: 20px 25px;
+  margin-bottom: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.applicant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Info inside card */
+.applicant-info p {
+  margin: 6px 0;
+  font-size: 16px;
+  color: #374151;
+}
+
+/* Resume link */
+.resume-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: 500;
+  color: #4f46e5; /* primary color */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.resume-link:hover {
+  color: #4338ca;
+  text-decoration: underline;
+}
+
+/* Divider between applicants */
+.applicant-card + .applicant-card {
+  margin-top: 15px;
+}

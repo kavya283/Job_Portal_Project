@@ -1,0 +1,134 @@
+.post-job-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  transition: all 0.5s ease;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+      to bottom,
+      rgba(var(--bg-rgb), 0.75), 
+      rgba(var(--bg-rgb), 0.9)
+    ),
+    url('../assets/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+body.dark .post-job-wrapper {
+  background: linear-gradient(
+      135deg, 
+      rgba(15, 23, 42, 0.9) 0%, 
+      rgba(30, 41, 59, 0.95) 100%
+    ),
+    url('../assets/background.jpg'); 
+    background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+.post-job-card {
+  background: var(--card);
+  padding: 40px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease, transform 0.3s ease;
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-header h2 {
+  font-size: 28px;
+  color: var(--text); /* Switches to light color in dark mode */
+  margin-bottom: 8px;
+}
+
+.form-header p {
+  color: var(--text-muted); /* Uses the gray variable from index.css */
+  font-size: 16px;
+}
+
+.modern-form .form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modern-form label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.modern-form input, 
+.modern-form select, 
+.modern-form textarea {
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg); /* Uses page background color for inputs */
+  color: var(--text);
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.modern-form input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+.modern-form input:focus, 
+.modern-form textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--card);
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.15);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.salary-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Fix for the Salary row */
+@media (max-width: 500px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

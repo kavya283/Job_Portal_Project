@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<style>
+
+body{
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin:0;
+  background:#f3f4f6;
+}
+
+/* A4 SAFE */
+.container{
+  width:100%;
+  max-width:800px;
+  margin:auto;
+  background:#fff;
+  display:flex;
+}
+
+/* LEFT PANEL */
+.sidebar{
+  width:32%;
+  background:#1e293b;
+  color:#fff;
+  padding:28px 22px;
+}
+
+.sidebar h2{
+  margin-bottom:6px;
+  font-size:22px;
+}
+
+.sidebar p{
+  font-size:13px;
+  line-height:1.6;
+  margin:2px 0;
+}
+
+.section-title{
+  margin-top:24px;
+  font-size:13px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  border-bottom:1px solid rgba(255,255,255,0.25);
+  padding-bottom:4px;
+}
+
+/* RIGHT PANEL */
+.main{
+  width:68%;
+  padding:32px 36px;
+}
+
+.name{
+  font-size:26px;
+  font-weight:600;
+  color:#0f172a;
+}
+
+.role{
+  color:#2563eb;
+  font-size:15px;
+  margin-bottom:18px;
+}
+
+.block{
+  margin-bottom:20px;
+}
+
+.block h3{
+  font-size:15px;
+  color:#1e293b;
+  border-bottom:2px solid #e5e7eb;
+  padding-bottom:4px;
+  margin-bottom:10px;
+}
+
+.item{
+  margin-bottom:10px;
+}
+
+.item-title{
+  font-weight:600;
+  font-size:14px;
+}
+
+.item-sub{
+  font-size:12px;
+  color:#6b7280;
+}
+
+ul{
+  padding-left:16px;
+  margin-top:6px;
+}
+
+li{
+  margin-bottom:5px;
+  font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <% if(name){ %><h2><%= name %></h2><% } %>
+    <% if(email){ %><p><%= email %></p><% } %>
+    <% if(phone){ %><p><%= phone %></p><% } %>
+    <% if(location){ %><p><%= location %></p><% } %>
+
+    <% if (skills && skills.length) { %>
+      <div class="section-title">Skills</div>
+      <ul>
+        <% skills.forEach(skill=>{ %>
+          <li><%= skill %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <% if (languages && languages.length) { %>
+      <div class="section-title">Languages</div>
+      <ul>
+        <% languages.forEach(lang=>{ %>
+          <li><%= lang %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <% if(name){ %><div class="name"><%= name %></div><% } %>
+    <% if(title){ %><div class="role"><%= title %></div><% } %>
+
+    <% if(summary){ %>
+    <div class="block">
+      <h3>Professional Summary</h3>
+      <p><%= summary %></p>
+    </div>
+    <% } %>
+
+    <% if (experience && experience.length) { %>
+    <div class="block">
+      <h3>Experience</h3>
+      <% experience.forEach(exp=>{ %>
+        <div class="item">
+          <% if(exp.company || exp.role){ %>
+          <div class="item-title">
+            <%= exp.company || "" %> <% if(exp.company && exp.role){ %>–<% } %> <%= exp.role || "" %>
+          </div>
+          <% } %>
+
+          <% if(exp.duration){ %>
+          <div class="item-sub"><%= exp.duration %></div>
+          <% } %>
+
+          <% if(exp.description){ %>
+          <p><%= exp.description %></p>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <% if (education && education.length) { %>
+    <div class="block">
+      <h3>Education</h3>
+      <% education.forEach(edu=>{ %>
+        <div class="item">
+          <% if(edu.degree){ %>
+          <div class="item-title"><%= edu.degree %></div>
+          <% } %>
+
+          <% if(edu.college || edu.year){ %>
+          <div class="item-sub">
+            <%= edu.college || "" %>
+            <% if(edu.college && edu.year){ %>|<% } %>
+            <%= edu.year || "" %>
+          </div>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <% if (projects && projects.length) { %>
+    <div class="block">
+      <h3>Projects</h3>
+      <% projects.forEach(p=>{ %>
+        <div class="item">
+          <% if(p.name){ %>
+          <div class="item-title"><%= p.name %></div>
+          <% } %>
+
+          <% if(p.description){ %>
+          <p><%= p.description %></p>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+  </div>
+
+</div>
+
+</body>
+</html>

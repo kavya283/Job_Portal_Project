@@ -1,0 +1,169 @@
+/* ApplyModal.css */
+:root {
+  --modal-bg: #ffffff;
+  --overlay-bg: rgba(15, 23, 42, 0.8);
+  --primary-blue: #2563eb;
+  --primary-dark: #1d4ed8;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --danger: #ef4444;
+}
+
+/* Dark mode compatibility */
+body.dark .modal-content {
+  --modal-bg: #1e293b;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  border-color: #334155;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--modal-bg);
+  width: 100%;
+  max-width: 500px;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+  animation: modalAppear 0.3s ease-out;
+}
+
+/* Error Banner Styling */
+.error-banner {
+  background: #fef2f2;
+  color: var(--danger);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #fee2e2;
+  margin-bottom: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.modal-content .muted {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* Custom File Input Styling */
+.file-input-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.file-input-wrapper input[type="file"] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.file-label {
+  display: block;
+  padding: 16px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  background: #f8fafc;
+  word-break: break-all; /* Important for long file names */
+}
+
+.file-input-wrapper:hover .file-label {
+  border-color: var(--primary-blue);
+  background: #f1f5f9;
+}
+
+.file-selected .file-label {
+  border-style: solid;
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  background: rgba(37, 99, 235, 0.05);
+  font-weight: 500;
+}
+
+.input-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.submit-btn, .cancel-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  white-space: nowrap;
+}
+
+.submit-btn {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.cancel-btn:hover {
+  background: #e2e8f0;
+}
+.salary-info{
+  margin:6px 0 14px;
+  font-weight:600;
+  color:#16a34a;
+  font-size:15px;
+}
+
+@keyframes modalAppear {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

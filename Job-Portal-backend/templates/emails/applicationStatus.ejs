@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; }
+    .card {
+      background:#ffffff;
+      padding:25px;
+      border-radius:10px;
+      max-width:600px;
+      margin:auto;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+    .header img { max-width:120px; margin-bottom:15px; }
+    h2 { color:#057638; margin-bottom:10px; }
+    p { color:#444; line-height:1.5; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <% if (logoUrl) { %>
+        <img src="<%= logoUrl %>" alt="Job Portal Logo">
+      <% } %>
+    </div>
+
+    <h2>📢 Application Status Update</h2>
+
+    <p>Hello <b><%= name || "User" %></b>,</p>
+
+    <% if (jobTitle && status) { %>
+      <p>Your application for <b><%= jobTitle %></b> is now: <b><%= status %></b></p>
+    <% } else { %>
+      <p>You have a new update regarding your application.</p>
+    <% } %>
+
+    <% if (portalLink) { %>
+      <p>Check your dashboard: <a href="<%= portalLink %>"><%= portalLink %></a></p>
+    <% } %>
+
+    <p>Best regards,<br/>Job Portal Team</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --primary: #2563eb;
+  --danger: #ef4444;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --border: #e2e8f0; 
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+body.dark {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --border: #334155; 
+}
+
+.my-jobs-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 40px 20px;
+  color: var(--text);
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+      to bottom,
+      rgba(var(--bg-rgb), 0.75), 
+      rgba(var(--bg-rgb), 0.9)
+    ),
+    url('../assets/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  border-radius: 20px; 
+}
+.job-info button, 
+.view-applicants-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 20px;
+  background: var(--card); 
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.job-info button:hover, 
+.view-applicants-btn:hover {
+  background: var(--primary);
+  color: white; 
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+  transform: translateY(-2px);
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border); /* Uses variable */
+}
+
+.header-section h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.add-job-btn {
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+}
+
+.add-job-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.job-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.job-card-simple {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.job-card-simple:hover {
+  transform: scale(1.01);
+  border-color: var(--primary);
+}
+
+.job-info h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.job-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.open {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+
+.status-badge.closed {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+.job-actions-row {
+  display: flex;
+  gap: 12px;
+}
+
+.edit-btn, .delete-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.edit-btn {
+  background: rgba(37, 99, 235, 0.1); 
+  color: var(--primary);
+}
+
+.edit-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.delete-btn {
+  background: rgba(239, 68, 68, 0.1); 
+  color: var(--danger);
+}
+
+.delete-btn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px;
+  background: var(--card);
+  border-radius: 20px;
+  border: 2px dashed var(--border); /* Uses variable */
+  color: var(--muted);
+}
