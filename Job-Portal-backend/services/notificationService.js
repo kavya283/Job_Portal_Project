@@ -11,29 +11,31 @@ exports.createAndSendNotification = async (io, data) => {
       return null;
     }
 
-    // ===== 1️⃣ Normalize & validate notification type =====
+    // ===== 1️⃣ Allowed notification types =====
     const allowedTypes = [
       "APPLICATION",
       "STATUS_UPDATE",
       "NEW_JOB",
       "APPLICATION_RECEIVED",
-      "APPLICATION_SUBMITTED"
+      "APPLICATION_SUBMITTED",
+      "OFFER_SENT"
     ];
 
     let notifType = (data.type || "APPLICATION").toUpperCase();
 
     if (!allowedTypes.includes(notifType)) {
-      console.log("⚠ Invalid type received:", data.type, "→ defaulting to APPLICATION");
+      console.log("⚠ Invalid type:", data.type, "→ default APPLICATION");
       notifType = "APPLICATION";
     }
 
-    // ===== 2️⃣ Determine recipient role =====
+    // ===== 2️⃣ Recipient role mapping =====
     const roleMap = {
       NEW_JOB: "candidate",
       APPLICATION: "employer",
       STATUS_UPDATE: "candidate",
       APPLICATION_RECEIVED: "employer",
       APPLICATION_SUBMITTED: "candidate",
+      OFFER_SENT: "candidate"
     };
 
     const recipientRole = (
@@ -42,19 +44,21 @@ exports.createAndSendNotification = async (io, data) => {
       "candidate"
     ).toLowerCase();
 
-    // ===== 3️⃣ Ensure recipients array =====
+    // ===== 3️⃣ Normalize recipients =====
     const recipients = Array.isArray(data.recipientId)
       ? data.recipientId
       : [data.recipientId];
 
-    // ===== 4️⃣ Fetch job info if jobId provided =====
+    // ===== 4️⃣ Fetch job info =====
     let jobInfo = {};
     if (data.jobId && mongoose.Types.ObjectId.isValid(data.jobId)) {
       const job = await Job.findById(data.jobId);
       if (job) {
-        jobInfo.jobTitle = job.title;
-        jobInfo.companyName = job.companyName;
-        jobInfo.location = job.location;
+        jobInfo = {
+          jobTitle: job.title,
+          companyName: job.companyName,
+          location: job.location
+        };
       }
     }
 
@@ -86,12 +90,11 @@ exports.createAndSendNotification = async (io, data) => {
       .filter(Boolean);
 
     if (!notifications.length) {
-      console.log("❌ Notification skipped: no valid recipients");
+      console.log("❌ No valid recipients");
       return null;
     }
 
-    // 🔍 Debug log before saving
-    console.log("📦 Notifications to save:", notifications);
+    console.log("📦 Saving notifications:", notifications.length);
 
     // ===== 6️⃣ Save notifications =====
     const newNotifications = await Notification.insertMany(notifications, {
@@ -100,44 +103,96 @@ exports.createAndSendNotification = async (io, data) => {
 
     console.log("✅ Notifications saved:", newNotifications.length);
 
-    // ===== 7️⃣ Emit realtime =====
+    // ===== 7️⃣ Realtime emit =====
     if (io) {
       newNotifications.forEach((notif) => {
         io.to(notif.recipient.toString()).emit("receive_notification", notif);
       });
     }
 
-    // ===== 8️⃣ Send email =====
-    if (data.recipientEmail) {
-      const templateMap = {
-        NEW_JOB: "newjob",
-        APPLICATION: "applicationSubmitted",
-        STATUS_UPDATE: "applicationStatus",
-        APPLICATION_RECEIVED: "applicationSubmitted",
-        APPLICATION_SUBMITTED: "applicationSubmitted",
-      };
+    // ===== 8️⃣ EMAIL HANDLING (FINAL FIX) =====
 
+    const emailAllowedTypes = [
+      "STATUS_UPDATE",
+      "APPLICATION_RECEIVED",
+      "APPLICATION_SUBMITTED",
+      "OFFER_SENT",
+      "NEW_JOB"
+    ];
+
+    const templateMap = {
+      NEW_JOB: "newJob",
+
+      // ✅ CORRECT MAPPING
+      APPLICATION_RECEIVED: "applicationReceived",
+      APPLICATION_SUBMITTED: "applicationSubmitted",
+      STATUS_UPDATE: "applicationStatus",
+      OFFER_SENT: "offerLetter",
+    };
+
+    // Normalize email list
+    const emailList = Array.isArray(data.recipientEmail)
+      ? data.recipientEmail
+      : data.recipientEmail
+      ? [data.recipientEmail]
+      : [];
+
+    console.log("📧 Email Condition Check:", {
+      sendEmail: data.sendEmail,
+      emailList,
+      notifType,
+      allowed: emailAllowedTypes.includes(notifType)
+    });
+
+    if (!emailList.length) {
+      console.log("❌ No recipient email provided");
+    }
+
+    if (
+      data.sendEmail &&
+      emailList.length &&
+      emailAllowedTypes.includes(notifType)
+    ) {
       const emailData = {
         name: data.name || data.candidateName || "User",
         message: data.message || "",
-        jobTitle: jobInfo.jobTitle || data.jobTitle || "",
-        candidateName: data.candidateName || "",
-        companyName: jobInfo.companyName || data.companyName || "",
-        location: jobInfo.location || data.location || "",
+
+        jobTitle: data.jobTitle || jobInfo.jobTitle || "",
+        companyName: data.companyName || jobInfo.companyName || "",
+        location: data.location || jobInfo.location || "",
+
+        portalLink: data.portalLink || "",
         jobLink: data.jobLink || "",
-        status: data.status || "",
+
+        candidateName: data.candidateName || "",
+        status: data.status || ""
       };
 
+      console.log("📧 Sending emails to:", emailList);
+
       try {
-        await sendEmail(
-          data.recipientEmail,
-          data.subject || "Job Portal Notification",
-          data.template || templateMap[notifType] || "defaultTemplate",
-          emailData
+        await Promise.all(
+          emailList.map((email) =>
+            sendEmail(
+              email,
+              data.subject || "Job Portal Notification",
+              data.template || templateMap[notifType] || "applicationSubmitted",
+              emailData
+            )
+          )
         );
-      } catch (emailErr) {
-        console.log("⚠ Email skipped:", emailErr.message);
+
+        console.log("✅ All emails sent successfully");
+      } catch (err) {
+        console.error("❌ Email sending failed:", err);
       }
+
+    } else {
+      console.log("📧 Email skipped", {
+        sendEmail: data.sendEmail,
+        emailCount: emailList.length,
+        type: notifType
+      });
     }
 
     return newNotifications.length === 1

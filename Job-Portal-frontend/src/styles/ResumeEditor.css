@@ -1,169 +1,290 @@
 /* ==========================
-   RESUME EDITOR WRAPPER
+   ROOT VARIABLES (THEME)
 ========================== */
-.resume-editor{
-  position:relative;
-  padding:40px;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  min-height:100vh;
-  background:linear-gradient(120deg,#eef2ff,#f8fafc);
-  overflow:hidden;
-}
-
-/* Background image overlay like dashboard */
-.resume-editor::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:url('../assets/background.jpg'); /* same image used in dashboard */
-  background-size:cover;
-  background-position:center;
-  opacity:0.12;
-  pointer-events:none;
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --success: #16a34a;
+  --danger: #ef4444;
+  --gray: #6b7280;
+  --light-bg: #f1f5f9;
+  --border: #e5e7eb;
+  --text: #0f172a;
 }
 
 /* ==========================
-   EDITOR CARD
+   WRAPPER
 ========================== */
-.editor-card{
-  position:relative;
-  width:720px;
-  background:white;
-  padding:32px;
-  border-radius:16px;
-  box-shadow:0 20px 45px rgba(0,0,0,0.08);
-  backdrop-filter:blur(6px);
-  z-index:1;
-  transition:all 0.25s ease;
+.resume-editor {
+  position: relative;
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  overflow: hidden;
 }
 
-.editor-card h2{
-  margin-bottom:8px;
-}
-
-.editor-card p{
-  color:#6b7280;
-  font-size:14px;
+/* background */
+.resume-editor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('../assets/background.jpg') center/cover no-repeat;
+  opacity: 0.06;
 }
 
 /* ==========================
-   FORM GRID
+   CARD
 ========================== */
-.form-grid{
-  display:grid;
-  gap:16px;
-  margin-top:22px;
+.editor-card {
+  width: 100%;
+  max-width: 900px;
+  padding: 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 2;
 }
 
+/* ==========================
+   HEADING
+========================== */
+.editor-card h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+/* ==========================
+   GRID FORM
+========================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.form-grid textarea,
+.form-grid input[name="skills"],
+.form-grid input[name="languages"],
+.form-grid input[name="achievements"],
+.form-grid input[name="certifications"] {
+  grid-column: span 2;
+}
+
+/* inputs */
 .form-grid input,
-.form-grid textarea{
-  padding:12px;
-  border:1px solid #e5e7eb;
-  border-radius:8px;
-  font-size:14px;
-  transition:all 0.2s ease;
-  background:#fff;
+.form-grid textarea {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.25s ease;
+  background: white;
 }
 
+/* focus */
 .form-grid input:focus,
-.form-grid textarea:focus{
-  border-color:#4f46e5;
-  outline:none;
-  box-shadow:0 0 0 2px rgba(79,70,229,0.15);
+.form-grid textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  outline: none;
 }
 
-.form-grid textarea{
-  min-height:120px;
-  resize:vertical;
+/* textarea */
+.form-grid textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
 /* ==========================
-   BUTTONS
+   SECTION HEADINGS
 ========================== */
-.editor-actions{
-  display:flex;
-  gap:12px;
-  margin-top:24px;
-  flex-wrap:wrap;
+.editor-card h3 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: var(--text);
 }
 
-.save-btn{
-  background:linear-gradient(135deg,#2563eb,#4f46e5);
-  color:white;
-  border:none;
-  padding:10px 18px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:600;
-  transition:all 0.25s ease;
-}
-
-.download-btn{
-  background:linear-gradient(135deg,#16a34a,#22c55e);
-  color:white;
-  border:none;
-  padding:10px 18px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:600;
-  transition:all 0.25s ease;
-}
-
-.back-btn{
-  background:#6b7280;
-  color:white;
-  border:none;
-  padding:10px 18px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:600;
-  transition:all 0.25s ease;
-}
-
-.save-btn:hover,
-.download-btn:hover,
-.back-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 20px rgba(0,0,0,0.15);
-}
 /* ==========================
-   DARK MODE (SOFT)
+   DYNAMIC SECTION ITEM
 ========================== */
+.dynamic-item {
+  background: var(--light-bg);
+  padding: 15px;
+  border-radius: 14px;
+  margin-bottom: 15px;
 
-body.dark .resume-editor{
-  background:linear-gradient(120deg,#1f2937,#111827);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+
+  position: relative;
+  transition: 0.3s ease;
 }
 
-body.dark .resume-editor::before{
-  opacity:0.08;
+.dynamic-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-body.dark .editor-card{
-  background:#1f2937;
-  color:#f3f4f6;
-  box-shadow:0 20px 45px rgba(0,0,0,0.4);
+/* textarea full width */
+.dynamic-item textarea {
+  grid-column: span 2;
 }
 
-body.dark .editor-card p{
-  color:#cbd5f5;
+/* inputs */
+.dynamic-item input,
+.dynamic-item textarea {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
-body.dark .form-grid input,
-body.dark .form-grid textarea{
-  background:#111827;
-  border:1px solid #374151;
-  color:#f9fafb;
+/* remove button */
+.dynamic-item button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-body.dark .form-grid input::placeholder,
-body.dark .form-grid textarea::placeholder{
-  color:#9ca3af;
+.dynamic-item button:hover {
+  background: #b91c1c;
 }
 
-body.dark .form-grid input:focus,
-body.dark .form-grid textarea:focus{
-  border-color:#6366f1;
-  box-shadow:0 0 0 2px rgba(99,102,241,0.2);
+/* ==========================
+   ADD BUTTON
+========================== */
+.add-section-btn {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-section-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* ==========================
+   ACTION BUTTONS
+========================== */
+.editor-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* buttons */
+.editor-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+/* individual */
+.save-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.save-btn:hover {
+  background: var(--primary-dark);
+}
+
+.download-btn {
+  background: var(--success);
+  color: white;
+}
+
+.download-btn:hover {
+  background: #15803d;
+}
+
+.back-btn {
+  background: var(--gray);
+  color: white;
+}
+
+.back-btn:hover {
+  background: #4b5563;
+}
+
+/* hover effect */
+.editor-actions button:hover {
+  transform: scale(1.05);
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid textarea,
+  .form-grid input[name="skills"],
+  .form-grid input[name="languages"],
+  .form-grid input[name="achievements"],
+  .form-grid input[name="certifications"] {
+    grid-column: span 1;
+  }
+
+  .dynamic-item {
+    grid-template-columns: 1fr;
+  }
+
+  .dynamic-item textarea {
+    grid-column: span 1;
+  }
+}
+
+/* ==========================
+   DARK MODE
+========================== */
+body.dark .resume-editor {
+  background: #020617;
+}
+
+body.dark .editor-card {
+  background: #111827;
+  color: white;
+}
+
+body.dark input,
+body.dark textarea {
+  background: #020617;
+  color: white;
+  border: 1px solid #374151;
+}
+
+body.dark .dynamic-item {
+  background: #1f2937;
 }

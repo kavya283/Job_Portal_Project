@@ -1,0 +1,124 @@
+.interview-card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  margin-bottom:20px;
+  transition:all 0.2s ease;
+}
+
+.interview-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 25px rgba(0,0,0,0.12);
+}
+
+/* HEADER */
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.card-header h3{
+  margin:0;
+  font-size:18px;
+}
+
+/* STATUS */
+
+.status-badge{
+  color:white;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+}
+
+/* INFO */
+
+.interview-info p{
+  margin:6px 0;
+  color:#555;
+}
+
+/* MEETING SECTION */
+
+.meeting-section{
+  margin-top:10px;
+}
+
+.join-btn{
+  margin-left:10px;
+  background:#4CAF50;
+  color:white;
+  padding:6px 12px;
+  border-radius:6px;
+  text-decoration:none;
+  font-size:13px;
+}
+
+.join-btn:hover{
+  background:#43a047;
+}
+
+.waiting-text{
+  margin-left:8px;
+  color:#999;
+  font-size:13px;
+}
+
+/* MESSAGE */
+
+.message-box{
+  margin-top:12px;
+  padding:10px;
+  background:#f5f7fb;
+  border-radius:6px;
+  font-size:14px;
+}
+
+/* COUNTDOWN */
+
+.countdown{
+  margin-top:12px;
+  font-weight:600;
+  color:#333;
+}
+
+/* ACTION BUTTONS */
+
+.action-buttons{
+  margin-top:15px;
+  display:flex;
+  gap:10px;
+}
+
+.accept-btn{
+  flex:1;
+  background:#28a745;
+  border:none;
+  padding:8px;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.accept-btn:hover{
+  background:#218838;
+}
+
+.decline-btn{
+  flex:1;
+  background:#dc3545;
+  border:none;
+  padding:8px;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.decline-btn:hover{
+  background:#c82333;
+}

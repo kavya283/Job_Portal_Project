@@ -1,49 +1,63 @@
-/* PAGE BACKGROUND */
+/* =========================
+   ROOT & GLOBAL STYLES
+========================= */
 .job-details-wrapper {
     min-height: 100vh;
     padding: 60px 20px;
-    position: relative;
     background:
-      linear-gradient(to bottom,
-        rgba(var(--bg-rgb), 0.75),
-        rgba(var(--bg-rgb), 0.92)
+      linear-gradient(135deg,
+        rgba(var(--bg-rgb), 0.8),
+        rgba(var(--bg-rgb), 0.95)
       ),
       url('../assets/background.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    display: flex;
+    justify-content: center;
 }
 
-/* BACK BUTTON */
+/* =========================
+   BACK BUTTON
+========================= */
 .back-link {
-    background: rgba(var(--primary-rgb), 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(var(--primary-rgb), 0.12);
     color: var(--primary);
     border: 2px solid var(--primary);
-    border-radius: 12px;
-    padding: 10px 18px;
+    border-radius: 10px;
+    padding: 10px 16px;
     font-weight: 600;
-    margin-bottom: 25px;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .back-link:hover {
     background: var(--primary);
-    color: white;
-    transform: translateX(-4px);
+    color: #fff;
+    transform: translateX(-6px);
 }
 
-/* JOB CARD */
+/* =========================
+   JOB CARD
+========================= */
 .job-card-large {
-    background: var(--card);
-    border-radius: 22px;
-    padding: 45px;
+    width: 100%;
     max-width: 900px;
-    margin: 0 auto;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    background: var(--card);
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.15);
     border: 1px solid var(--border);
+    backdrop-filter: blur(14px);
+    animation: fadeIn 0.5s ease;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .job-header {
     display: flex;
     justify-content: space-between;
@@ -52,58 +66,71 @@
 }
 
 .job-header h1 {
-    font-size: 2rem;
-    margin-bottom: 6px;
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: var(--text);
 }
 
 .company-tagline {
     color: var(--text-muted);
+    font-size: 1rem;
+    margin-top: 4px;
 }
 
-/* STATUS BADGE */
+/* =========================
+   STATUS BADGE
+========================= */
 .status-pill {
     padding: 6px 14px;
     border-radius: 999px;
     font-weight: 600;
     font-size: 0.8rem;
-    text-transform: capitalize;
 }
 
 .status-pill.open {
-    background: #e7f8ee;
-    color: #1f9d55;
+    background: #e8fdf1;
+    color: #15803d;
 }
 
 .status-pill.closed {
-    background: #fde8e8;
-    color: #c81e1e;
+    background: #ffe4e6;
+    color: #b91c1c;
 }
 
-/* TAGS */
+/* =========================
+   TAGS
+========================= */
 .job-tags {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     margin-top: 20px;
-    font-weight: 500;
+    flex-wrap: wrap;
     color: var(--text-muted);
+    font-weight: 500;
 }
 
-/* DIVIDER */
+/* =========================
+   DIVIDER
+========================= */
 .divider {
     margin: 30px 0;
     border: none;
     border-top: 1px solid var(--border);
 }
 
-/* SECTIONS */
+/* =========================
+   SECTIONS
+========================= */
 .detail-section {
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
 
 .detail-section h3 {
+    font-size: 1.2rem;
     border-left: 4px solid var(--primary);
     padding-left: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    color: var(--text);
 }
 
 .description-text {
@@ -111,81 +138,153 @@
     color: var(--text-muted);
 }
 
-.detail-list li {
-    margin-bottom: 8px;
-}
-
-/* ---------- RESUME UPLOAD UI ---------- */
-
+/* =========================
+   RESUME UPLOAD
+========================= */
 .resume-upload-box {
     margin-top: 35px;
 }
 
-.upload-label {
-    font-weight: 600;
-    margin-bottom: 10px;
-    display: block;
-}
-
+/* Upload Area */
 .upload-area {
-    border: 2px dashed var(--border);
-    padding: 30px;
-    border-radius: 16px;
-    text-align: center;
-    transition: 0.3s ease;
-    background: rgba(var(--primary-rgb), 0.03);
     position: relative;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(var(--primary-rgb), 0.04);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
 }
 
+/* Hover Effect */
 .upload-area:hover {
     border-color: var(--primary);
-    background: rgba(var(--primary-rgb), 0.06);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(var(--primary-rgb), 0.25);
 }
 
+/* Glow */
+.upload-area::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(var(--primary-rgb),0.25), transparent 70%);
+    opacity: 0;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+.upload-area:hover::after {
+    opacity: 1;
+}
+
+/* Drag Active */
+.upload-area.drag-active {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.12);
+    box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.4);
+}
+
+/* File Input */
 .file-input {
     position: absolute;
     inset: 0;
     opacity: 0;
     cursor: pointer;
+    z-index: 2;
 }
 
+/* Upload Text */
 .upload-hint {
+    font-weight: 500;
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
-/* FILE PREVIEW */
+.upload-hint::before {
+    content: "📂 ";
+}
+
+/* =========================
+   FILE PREVIEW
+========================= */
 .file-preview {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-weight: 600;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(var(--primary-rgb), 0.12);
     color: var(--primary);
+    font-weight: 600;
+    animation: fadeIn 0.3s ease;
 }
 
-.file-icon {
-    font-size: 1.4rem;
+/* File Name */
+.file-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* APPLY BUTTON */
+/* Remove Button */
+.remove-file {
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 6px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.remove-file:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+/* =========================
+   APPLY BUTTON
+========================= */
 .apply-now-btn {
     margin-top: 35px;
     width: 100%;
-    padding: 18px;
+    padding: 16px;
     font-size: 1.05rem;
-    background: linear-gradient(135deg, var(--primary), #5a67ff);
-    color: white;
+    font-weight: 700;
     border: none;
     border-radius: 14px;
-    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary), #5a67ff);
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine Effect */
+.apply-now-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+    transition: 0.5s;
+}
+
+.apply-now-btn:hover::after {
+    left: 120%;
 }
 
 .apply-now-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(var(--primary-rgb), 0.45);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.4);
 }
 
 .apply-now-btn:disabled {
@@ -194,7 +293,41 @@
     cursor: not-allowed;
 }
 
-/* FOOTER */
+/* =========================
+   FOOTER
+========================= */
 .action-footer {
-    margin-top: 10px;
+    margin-top: 20px;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .job-card-large {
+        padding: 30px;
+    }
+
+    .job-header {
+        flex-direction: column;
+    }
+
+    .job-tags {
+        flex-direction: column;
+        gap: 8px;
+    }
 }

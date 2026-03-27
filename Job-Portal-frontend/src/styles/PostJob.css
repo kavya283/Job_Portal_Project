@@ -126,6 +126,54 @@ body.dark .post-job-wrapper {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
 }
 
+/* FORM SECTIONS */
+
+.form-section{
+  margin-top:30px;
+  padding-top:20px;
+  border-top:1px dashed var(--border);
+}
+
+.section-title{
+  font-size:18px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:15px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* CHECKBOX */
+
+.checkbox-group{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.checkbox-group input{
+  width:18px;
+  height:18px;
+  accent-color:var(--primary);
+}
+
+/* ASSESSMENT BOX */
+
+.assessment-settings{
+  padding:15px;
+  border-radius:12px;
+  border:1px dashed var(--border);
+  background:rgba(var(--bg-rgb),0.4);
+}
+
+/* TEXTAREA */
+
+.modern-form textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
 /* Responsive Fix for the Salary row */
 @media (max-width: 500px) {
   .form-row {

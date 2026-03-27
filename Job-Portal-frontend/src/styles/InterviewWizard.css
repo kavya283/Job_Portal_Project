@@ -1,0 +1,287 @@
+/* ================= THEME ================= */
+body.light {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #1e293b;
+  --subtext: #64748b;
+  --border: #e2e8f0;
+  --primary: #2563eb;
+}
+
+body.dark {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #e2e8f0;
+  --subtext: #94a3b8;
+  --border: #334155;
+  --primary: #3b82f6;
+}
+
+/* ================= PAGE ================= */
+.wizard-container {
+  display: flex;
+  height: calc(100vh - 70px);
+  gap: 20px;
+  padding: 20px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+}
+
+/* ================= GLASS ================= */
+.glass {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 16px;
+}
+
+body.dark .glass {
+  background: rgba(30, 41, 59, 0.65);
+}
+
+.glass-bg {
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+}
+
+/* ================= LEFT PANEL ================= */
+.wizard-left {
+  width: 350px;
+  padding: 20px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* ================= RIGHT PANEL ================= */
+.wizard-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+}
+
+/* SCROLLBAR */
+.wizard-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.wizard-right::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+/* ================= HEADER ================= */
+.wizard-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+/* ================= CANDIDATE ================= */
+.wizard-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.wizard-header p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--subtext);
+}
+
+/* ================= STEPPER ================= */
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.step {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* ================= FORM ================= */
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ================= INPUT ================= */
+input,
+select,
+textarea {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--subtext);
+}
+
+/* FOCUS EFFECT */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+/* ================= ERROR ================= */
+.error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: -5px;
+}
+
+/* ================= BUTTON ================= */
+button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* BUTTON GROUP */
+.step-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* SUBMIT BUTTON */
+.submit-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+/* ================= BRAND ================= */
+.brand-card {
+  padding: 16px;
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+/* ================= PREVIEW ================= */
+.preview-card {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+/* ================= EMAIL PREVIEW ================= */
+.email-preview {
+  padding: 0;
+  overflow: hidden;
+}
+
+.email-header {
+  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: white;
+  padding: 14px;
+}
+
+.email-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.email-body {
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.email-details {
+  background: rgba(0,0,0,0.03);
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+body.dark .email-details {
+  background: rgba(255,255,255,0.05);
+}
+
+/* ================= PROGRESS ================= */
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  transition: width 0.3s ease;
+}
+
+/* ================= ANIMATION ================= */
+.fade {
+  animation: fadeSlide 0.3s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .wizard-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .wizard-left {
+    width: 100%;
+  }
+}

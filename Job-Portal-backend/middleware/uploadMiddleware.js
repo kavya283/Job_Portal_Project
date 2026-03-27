@@ -1,10 +1,19 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+
+// Define upload path
+const uploadPath = path.join(__dirname, "../uploads/resumes");
+
+// ✅ Ensure folder exists
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
 
 // Storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/resumes"); // ensure this folder exists
+    cb(null, uploadPath); // ✅ safe path
   },
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + "-" + file.originalname;
@@ -25,7 +34,7 @@ const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF, DOC, DOCX, JPG, PNG allowed"));
+    cb(new Error("Only PDF, DOC, DOCX, JPG, PNG allowed"), false);
   }
 };
 
@@ -33,7 +42,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // max 5MB
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
 
 module.exports = upload;

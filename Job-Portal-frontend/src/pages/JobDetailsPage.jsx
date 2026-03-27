@@ -12,7 +12,9 @@ const JobDetailsPage = () => {
   const [applying, setApplying] = useState(false); 
   const [error, setError] = useState(null);
   const [resumeFile, setResumeFile] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
 
+  /* ================= FETCH JOB ================= */
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
@@ -31,11 +33,8 @@ const JobDetailsPage = () => {
     if (id) fetchJobDetails();
   }, [id]);
 
-  // 📌 Handle resume selection
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
+  /* ================= FILE VALIDATION ================= */
+  const validateFile = (file) => {
     const allowedTypes = [
       "application/pdf",
       "application/msword",
@@ -45,51 +44,81 @@ const JobDetailsPage = () => {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert("Only PDF, DOC, DOCX, JPG, PNG allowed.");
-      return;
+      alert("❌ Only PDF, DOC, DOCX, JPG, PNG allowed.");
+      return false;
     }
 
+    if (file.size > 5 * 1024 * 1024) {
+      alert("❌ File size must be less than 5MB.");
+      return false;
+    }
+
+    return true;
+  };
+
+  /* ================= HANDLE FILE ================= */
+  const handleFileChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!validateFile(file)) return;
+
+    console.log("📄 Selected file:", file);
     setResumeFile(file);
   };
 
-  // 📌 Apply with resume upload
-  const handleApply = async () => {
+  /* ================= DRAG & DROP ================= */
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!file) return;
+
+    if (!validateFile(file)) return;
+
+    console.log("📄 Dropped file:", file);
+    setResumeFile(file);
+  };
+
+  /* ================= APPLY ================= */
+  const handleApply = async (e) => {
+    e.preventDefault();
+
     if (!resumeFile) {
-      alert("Please upload your resume first.");
+      alert("⚠ Please upload your resume first.");
       return;
     }
 
     if (!job?._id && !job?.id) {
-      alert("Job ID not found. Cannot apply.");
+      alert("Job ID missing.");
       return;
     }
+
     try {
       setApplying(true);
 
       const formData = new FormData();
-      formData.append("jobId", job._id || job.id); // use _id or id
-      formData.append("resume", resumeFile); // must match backend field
+      formData.append("jobId", job._id || job.id);
+      formData.append("resume", resumeFile);
 
-      console.log("📤 Sending Application FormData:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      console.log("📤 Sending FormData...");
 
-      const response = await api.post("/applications", formData); // no Content-Type header!
+      const response = await api.post("/applications", formData);
 
       console.log("✅ Apply Response:", response.data);
-      alert("Application submitted successfully!");
+
+      alert("🎉 Application submitted successfully!");
       setResumeFile(null);
 
     } catch (err) {
-      console.error("Apply error:", err);
+      console.error("Apply error:", err.response || err);
       const msg = err.response?.data?.message || "Server error while applying.";
       alert(`❌ Apply failed: ${msg}`);
     } finally {
       setApplying(false);
     }
   };
-
 
   if (loading) return <div className="loading-container"><h2>Loading Job Details...</h2></div>;
   if (error || !job) return <div className="error-container"><h3>{error || "Job not found"}</h3></div>;
@@ -98,18 +127,15 @@ const JobDetailsPage = () => {
     <div className="job-details-wrapper">
       <div className="container">
 
-        <button onClick={() => navigate(-1)} className="back-link">← Back</button>
+        <button onClick={() => navigate(-1)} className="back-link">
+          ← Back
+        </button>
 
         <div className="job-card-large">
 
           <header className="job-header">
-            <div className="header-main">
-              <h1>{job.title}</h1>
-              <p className="company-tagline">
-                at <strong>{job.companyName || job.employer?.companyName || "Our Company"}</strong>
-              </p>
-            </div>
-            <span className={`status-pill ${job.status}`}>{job.status}</span>
+            <h1>{job.title}</h1>
+            <p>at <strong>{job.companyName || job.employer?.companyName}</strong></p>
           </header>
 
           <div className="job-tags">
@@ -121,40 +147,26 @@ const JobDetailsPage = () => {
             </span>
           </div>
 
-          <hr className="divider" />
+          <hr />
 
-          <section className="detail-section">
+          <section>
             <h3>Description</h3>
-            <p className="description-text">{job.description}</p>
+            <p>{job.description}</p>
           </section>
 
-          {job.responsibilities && (
-            <section className="detail-section">
-              <h3>Key Responsibilities</h3>
-              <ul className="detail-list">
-                {job.responsibilities.split('\n').map((point, i) => (
-                  point.trim() && <li key={i}>{point}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {job.qualifications && (
-            <section className="detail-section">
-              <h3>What We're Looking For</h3>
-              <ul className="detail-list">
-                {job.qualifications.split('\n').map((point, i) => (
-                  point.trim() && <li key={i}>{point}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {/* 📌 Resume Upload Section */}
+          {/* ================= RESUME UPLOAD ================= */}
           <div className="resume-upload-box">
-            <label className="upload-label">Upload Resume</label>
+            <label>Upload Resume</label>
 
-            <div className="upload-area">
+            <label
+              className={`upload-area ${dragActive ? "drag-active" : ""}`}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragActive(true);
+              }}
+              onDragLeave={() => setDragActive(false)}
+              onDrop={handleDrop}
+            >
               <input
                 type="file"
                 accept=".pdf,.doc,.docx,.jpg,.png"
@@ -163,31 +175,38 @@ const JobDetailsPage = () => {
               />
 
               {!resumeFile && (
-                <p className="upload-hint">
-                  Drag & drop or click to upload your resume
-                </p>
+                <p>📂 Drag & drop or click to upload your resume</p>
               )}
 
               {resumeFile && (
                 <div className="file-preview">
-                  <span className="file-icon">📄</span>
-                  <span className="file-name">{resumeFile.name}</span>
+                  📄 {resumeFile.name}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setResumeFile(null);
+                    }}
+                  >
+                    ❌
+                  </button>
                 </div>
               )}
-            </div>
+            </label>
           </div>
 
+          {/* ================= APPLY BUTTON ================= */}
           <div className="action-footer">
             <button 
               className="apply-now-btn" 
               onClick={handleApply}
-              disabled={applying || job.status === 'closed'}>
-
+              disabled={applying || job.status === 'closed'}
+            >
               {applying
                 ? "Submitting..."
                 : job.status === 'closed'
                 ? "Job Closed"
-                : "Apply for this Position"}
+                : "Apply Now"}
             </button>
           </div>
 

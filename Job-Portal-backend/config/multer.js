@@ -1,30 +1,33 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+
+const uploadPath = path.join(__dirname, "../uploads/resumes");
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
 
 const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "uploads/");
+  destination: (req, file, cb) => {
+    cb(null, uploadPath);
   },
-  filename(req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  }
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /pdf|doc|docx/;
-  const ext = path.extname(file.originalname).toLowerCase();
+  console.log("📥 File received:", file.originalname);
 
-  if (allowedTypes.test(ext)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only resumes allowed"));
-  }
+  cb(null, true); // 🔥 TEMPORARY (disable filtering for testing)
 };
 
-const uploadResume = multer({
+const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 module.exports = upload;

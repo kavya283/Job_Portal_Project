@@ -19,19 +19,24 @@
     "ejs": "^4.0.1",
     "express": "^4.21.0",
     "express-session": "^1.19.0",
+    "framer-motion": "^12.38.0",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.0",
-    "multer": "^2.0.2",
+    "multer": "^2.1.1",
     "nodemailer": "^7.0.13",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-linkedin-oauth2": "^2.0.0",
     "path": "^0.12.7",
-    "puppeteer": "^24.37.5",
+    "pdfkit": "^0.17.2",
+    "puppeteer": "^24.39.1",
+    "react-datepicker": "^9.1.0",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.12.0",
     "socket.io": "^4.8.3",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

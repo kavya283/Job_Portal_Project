@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Interview Scheduled</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; background:#f4f6f9; padding:20px;">
+
+<div style="max-width:600px;margin:auto;background:white;padding:30px;border-radius:8px;">
+
+  <div style="text-align:center;">
+    <img src="<%= logoUrl %>" width="120"/>
+    <h2 style="color:#2c3e50;">Interview Scheduled 🎉</h2>
+  </div>
+
+  <p>Hello <b><%= candidateName %></b>,</p>
+
+  <p>
+    Your interview for the position of 
+    <b><%= jobTitle %></b> at 
+    <b><%= companyName %></b> has been scheduled.
+  </p>
+
+  <h3>Interview Details</h3>
+
+  <p>
+    <b>Round:</b> <%= roundName %><br/>
+    <b>Date:</b> <%= new Date(date).toLocaleDateString() %><br/>
+    <b>Time:</b> <%= new Date(date).toLocaleTimeString() %><br/>
+    <b>Mode:</b> <%= mode %>
+  </p>
+
+  <% if(mode === "Online") { %>
+  <p>
+    <a href="<%= meetingLink %>"
+      style="display:inline-block;background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:4px;">
+      Join Interview
+    </a>
+  </p>
+  <% } %>
+
+  <% if(mode === "Offline") { %>
+  <p>
+    <b>Location:</b> <%= location %>
+  </p>
+  <% } %>
+
+  <% if(message) { %>
+  <p>
+    <b>Message from recruiter:</b><br/>
+    <%= message %>
+  </p>
+  <% } %>
+
+  <p>Please be available 10 minutes before the scheduled time.</p>
+
+  <hr/>
+
+  <div style="text-align:center;">
+    <a href="<%= portalLink %>"
+      style="background:#28a745;color:white;padding:10px 20px;text-decoration:none;border-radius:4px;">
+      View in Job Portal
+    </a>
+  </div>
+
+  <hr/>
+
+  <p style="font-size:12px;color:gray;text-align:center;">
+    © Job Portal | All rights reserved
+  </p>
+
+</div>
+
+</body>
+</html>

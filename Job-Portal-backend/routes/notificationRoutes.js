@@ -72,5 +72,22 @@ router.get("/test-mail", async (req, res) => {
   res.send("Mail triggered");
 });
 
+/* ======================================================
+   MARK ALL AS READ
+====================================================== */
+router.put("/read/all", authMiddleware, async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { recipient: req.user._id, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Mark All Read Error:", err);
+    res.status(500).json({ message: "Failed to mark all as read" });
+  }
+});
+
 
 module.exports = router;

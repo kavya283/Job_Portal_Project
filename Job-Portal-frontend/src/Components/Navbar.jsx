@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useNotifications } from "../context/NotificationContext";
-import api from "../api/axios";
 import "../styles/Navbar.css";
 
 const Navbar = () => {
@@ -17,8 +16,8 @@ const Navbar = () => {
     notifications,
     unreadCount,
     setNotifications,
-    setUnreadCount,
-    fetchNotifications   // ✅ ADDED
+    fetchNotifications,
+    markAsRead   // ✅ added
   } = useNotifications();
 
   const role = localStorage.getItem("role") || "candidate";
@@ -37,16 +36,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* 🔔 FETCH NOTIFICATIONS ON NAVBAR LOAD */
+  /* 🔔 FETCH NOTIFICATIONS */
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
-
-  /* 🔢 AUTO SYNC UNREAD COUNT */
-  useEffect(() => {
-    const unread = notifications.filter(n => !n.isRead).length;
-    setUnreadCount(unread);
-  }, [notifications, setUnreadCount]);
 
   /* 🔔 Pulse animation */
   useEffect(() => {
@@ -82,9 +75,9 @@ const Navbar = () => {
 
   const toggleTheme = () => setIsDarkMode((p) => !p);
 
-  /* 🔔 OPEN NOTIFICATION PANEL + REFRESH */
+  /* 🔔 OPEN NOTIFICATION PANEL */
   const openNotif = () => {
-    fetchNotifications();     // ✅ ensure fresh notifications
+    fetchNotifications();
     setShowNotifPanel(true);
     setShowDropdown(false);
   };
@@ -94,15 +87,11 @@ const Navbar = () => {
     setShowNotifPanel(false);
   };
 
+  /* ✅ MARK AS READ USING CONTEXT */
   const handleNotifClick = async (notif) => {
     try {
       if (!notif.isRead) {
-        await api.put(`/notifications/${notif._id}/read`);
-        setNotifications((prev) =>
-          prev.map((n) =>
-            n._id === notif._id ? { ...n, isRead: true } : n
-          )
-        );
+        await markAsRead(notif._id);
       }
 
       setShowNotifPanel(false);
@@ -124,7 +113,11 @@ const Navbar = () => {
           <div
             className="nav-logo"
             onClick={() =>
-              navigate(role === "employer" ? "/employer/home" : "/candidate/home")
+              navigate(
+                role === "employer"
+                  ? "/employer/home"
+                  : "/candidate/home"
+              )
             }
           >
             JobPortal
@@ -163,17 +156,19 @@ const Navbar = () => {
         <div className="profile-dropdown full-page">
           {role === "candidate" ? (
             <>
-              <Link onClick={()=>setShowDropdown(false)} to="/candidate/home" className="dropdown-item">Dashboard</Link>
-              <Link onClick={()=>setShowDropdown(false)} to="/candidate/profile" className="dropdown-item">Profile</Link>
-              <Link onClick={()=>setShowDropdown(false)} to="/my-applications" className="dropdown-item">Applications</Link>
-              <Link onClick={()=>setShowDropdown(false)} to="/candidate/jobs" className="dropdown-item">Find Jobs</Link>
+              <Link onClick={()=>setShowDropdown(false)} to="/candidate/home" className="dropdown-item">🏠 Dashboard</Link>
+              <Link onClick={()=>setShowDropdown(false)} to="/candidate/profile" className="dropdown-item">👤 Profile</Link>
+              <Link onClick={()=>setShowDropdown(false)} to="/my-applications" className="dropdown-item">📄 Applications</Link>
+              <Link onClick={()=>setShowDropdown(false)} to="/candidate/jobs" className="dropdown-item">🔍 Find Jobs</Link>
+              <Link onClick={()=>setShowDropdown(false)} to="/candidate/interviews" className="dropdown-item">🎤 My Interviews</Link>
+              <Link onClick={()=>setShowDropdown(false)} to="/offers" className="dropdown-item">💼 Offer Letter</Link>
             </>
           ) : (
             <>
-              <Link onClick={()=>setShowDropdown(false)} to="/employer/home" className="dropdown-item">Dashboard</Link>
-              <Link onClick={()=>setShowDropdown(false)} to="/employer/profile" className="dropdown-item">Profile</Link>
-              <Link onClick={()=>setShowDropdown(false)} to="/employer/my-jobs" className="dropdown-item">My Jobs</Link>
-              <Link onClick={()=>setShowDropdown(false)} to="/employer/post-job" className="dropdown-item">Post a Job</Link>
+            <Link onClick={()=>setShowDropdown(false)} to="/employer/home" className="dropdown-item">🏠 Dashboard</Link>
+            <Link onClick={()=>setShowDropdown(false)} to="/employer/profile" className="dropdown-item">👤 Profile</Link>
+            <Link onClick={()=>setShowDropdown(false)} to="/employer/my-jobs" className="dropdown-item">📄 My Jobs</Link>
+            <Link onClick={()=>setShowDropdown(false)} to="/employer/post-job" className="dropdown-item">➕ Post a Job</Link>
             </>
           )}
 

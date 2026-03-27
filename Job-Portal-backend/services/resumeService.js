@@ -10,13 +10,15 @@ exports.buildResumeHTML = async (profile) => {
     return value.split(",").map(v => v.trim());
   };
 
-  return await ejs.renderFile(templatePath, {
+  const data = {
     name: profile.name || "",
     email: profile.email || "",
     phone: profile.phone || "",
     location: profile.location || "",
     title: profile.title || "",
-    summary: profile.bio || profile.summary || "",
+
+    // ✅ CRITICAL FIX
+    bio: profile.bio || "",
 
     skills: normalizeArray(profile.skills),
     languages: normalizeArray(profile.languages),
@@ -24,5 +26,12 @@ exports.buildResumeHTML = async (profile) => {
     experience: profile.experience || [],
     education: profile.education || [],
     projects: profile.projects || [],
-  });
+
+    achievements: profile.achievements || [],
+    certifications: profile.certifications || []
+  };
+
+  console.log("🔥 DATA SENT TO EJS:", data); // DEBUG
+
+  return await ejs.renderFile(templatePath, data);
 };

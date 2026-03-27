@@ -1,64 +1,324 @@
-/* Container */
+/* ===== CONTAINER ===== */
 .applicants-container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
-  font-family: 'Inter', sans-serif;
+  padding: 40px 30px;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  min-height: 100vh;
 }
 
-/* Page Title */
+/* ===== HEADER ===== */
+.header-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 35px;
+}
+
 .page-title {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 30px;
-  color: #1f2937;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e293b;
 }
 
-/* Loading & No Applicants */
-.loading, .no-applicants {
-  text-align: center;
-  font-size: 16px;
-  color: #6b7280; /* muted gray */
+/* BACK BUTTON */
+.bck-btn {
+  padding: 10px 20px;
+  border: none;
+  background: #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
-/* Applicant Card */
+.bck-btn:hover {
+  background: #c7d2fe;
+  transform: translateY(-2px);
+}
+
+/* ===== GRID ===== */
+.applicants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 28px;
+}
+
+/* ===== CARD ===== */
 .applicant-card {
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  padding: 20px 25px;
-  margin-bottom: 20px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: 0.35s;
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .applicant-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
 }
 
-/* Info inside card */
-.applicant-info p {
-  margin: 6px 0;
-  font-size: 16px;
-  color: #374151;
+/* ===== CONFETTI ===== */
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image: radial-gradient(circle, #22c55e 2px, transparent 2px),
+    radial-gradient(circle, #3b82f6 2px, transparent 2px),
+    radial-gradient(circle, #f59e0b 2px, transparent 2px);
+  background-size: 20px 20px;
+  animation: confettiMove 3s linear infinite;
 }
 
-/* Resume link */
-.resume-link {
+@keyframes confettiMove {
+  from {
+    background-position: 0 0, 10px 10px, 20px 20px;
+  }
+  to {
+    background-position: 0 120px, 10px 130px, 20px 140px;
+  }
+}
+
+/* ===== TOP ===== */
+.card-top {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+/* ===== AVATAR ===== */
+.avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* ===== STATUS BADGE ===== */
+.status-badge {
+  margin-top: 6px;
   display: inline-block;
-  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  background: #e2e8f0;
+  text-transform: capitalize;
+}
+
+/* COLORS */
+.status-badge.rejected {
+  background: #dc2626;
+  color: white;
+}
+.status-badge.hired {
+  background: #16a34a;
+  color: white;
+}
+.status-badge.interview_scheduled,
+.status-badge.interview_completed {
+  background: #f59e0b;
+  color: white;
+}
+.status-badge.assessment_submitted {
+  background: #6366f1;
+  color: white;
+}
+.status-badge.offer_sent {
+  background: #3b82f6;
+  color: white;
+}
+
+/* ===== PIPELINE ===== */
+.pipeline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.pipeline::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  width: 90%;
+  height: 4px;
+  background: #e5e7eb;
+  transform: translateY(-50%);
+  border-radius: 10px;
+}
+
+.pipeline span {
+  z-index: 1;
+  background: #e5e7eb;
+  color: #475569;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  min-width: 70px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.pipeline span.active {
+  color: #fff;
+  font-weight: 600;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* STEP COLORS */
+.pipeline span:nth-child(1).active { background: #3b82f6; }
+.pipeline span:nth-child(2).active { background: #6366f1; }
+.pipeline span:nth-child(3).active { background: #22c55e; }
+.pipeline span:nth-child(4).active { background: #f59e0b; }
+.pipeline span:nth-child(5).active { background: #16a34a; }
+
+/* ===== SCORE ===== */
+.score-card {
+  background: #f1f5f9;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pass {
+  color: #16a34a;
+  font-weight: bold;
+}
+.fail {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* FAIL MESSAGE */
+.fail-message {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 6px;
   font-weight: 500;
-  color: #4f46e5; /* primary color */
-  text-decoration: none;
-  transition: color 0.2s;
 }
 
-.resume-link:hover {
-  color: #4338ca;
-  text-decoration: underline;
+/* ===== RESUME BUTTON ===== */
+.resume-btn {
+  margin-top: 10px;
+  padding: 9px 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s;
 }
 
-/* Divider between applicants */
-.applicant-card + .applicant-card {
-  margin-top: 15px;
+.resume-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ===== ACTION BUTTONS ===== */
+.applicant-actions {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  padding: 11px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+/* PRIMARY */
+.action-btn.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+/* SECONDARY */
+.action-btn.secondary {
+  background: #f59e0b;
+  color: white;
+}
+
+/* SUCCESS */
+.action-btn.success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+}
+
+/* PULSE */
+.action-btn.success.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70% { box-shadow: 0 0 0 14px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+/* HOVER */
+.action-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+/* STATUS TEXT */
+.status-done {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.hired-badge {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+/* ===== LOADING ===== */
+.loading {
+  text-align: center;
+  margin-top: 60px;
+}
+
+/* ===== NO DATA ===== */
+.no-applicants {
+  text-align: center;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .applicants-container {
+    padding: 20px;
+  }
+
+  .applicants-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline span {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
 }

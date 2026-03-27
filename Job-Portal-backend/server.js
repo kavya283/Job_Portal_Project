@@ -17,6 +17,9 @@ const candidateRoutes = require("./routes/candidateRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const resumeRoutes =require("./routes/resumeRoutes");
+const interviewRoutes = require("./routes/interviewRoutes");
+const assessmentRoutes = require("./routes/assessmentRoutes");
+const offerRoutes = require("./routes/offerRoutes");
 
 const app = express();
 require("./config/passport");
@@ -58,6 +61,8 @@ app.use(passport.session());
 // 4. Static Files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+app.use("/offers", express.static(path.join(__dirname, "offers")));
+
 // 5. Socket.IO Setup
 const server = http.createServer(app);
 const io = new Server(server, { 
@@ -96,6 +101,9 @@ app.use("/api/candidate", candidateRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/resume" , resumeRoutes);
+app.use("/api/interviews", interviewRoutes);
+app.use("/api/assessment", assessmentRoutes);
+app.use("/api/offers", offerRoutes);
 
 // 🔥 Multer Error Handler (IMPORTANT)
 app.use((err, req, res, next) => {

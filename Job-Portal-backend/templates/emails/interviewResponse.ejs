@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .header {
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .accepted {
+      background: #16a34a;
+    }
+
+    .rejected {
+      background: #dc2626;
+    }
+
+    .content {
+      padding: 20px;
+      color: #333;
+    }
+
+    .box {
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    p {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<%
+  const isAccepted = status && status.toLowerCase() === "accepted";
+%>
+
+<div class="card">
+
+  <!-- HEADER -->
+  <div class="header <%= isAccepted ? 'accepted' : 'rejected' %>">
+    <h2>
+      Candidate <%= isAccepted ? "Accepted ✅" : "Rejected ❌" %>
+    </h2>
+    <p><%= companyName %></p>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <p>
+      Candidate <b><%= candidateName %></b> has 
+      <b><%= status %></b> the interview invitation.
+    </p>
+
+    <div class="box">
+      <p><b>Job:</b> <%= jobTitle %></p>
+      <p><b>Round:</b> <%= roundName %></p>
+      <p><b>Date:</b> <%= date %></p>
+      <p><b>Mode:</b> <%= mode %></p>
+
+      <% if (mode === "Online") { %>
+        <p><b>Meeting Link:</b> <%= meetingLink %></p>
+      <% } else { %>
+        <p><b>Location:</b> <%= location %></p>
+      <% } %>
+    </div>
+
+    <p style="margin-top:20px;">
+      Please take further action from your dashboard.
+    </p>
+
+    <p>
+      Regards,<br/>
+      <b>Job Portal</b>
+    </p>
+
+  </div>
+
+</div>
+
+</body>
+</html>

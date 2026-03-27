@@ -4,56 +4,69 @@
 <meta charset="utf-8">
 
 <style>
-
 body{
   font-family: "Segoe UI", Arial, sans-serif;
   margin:0;
   background:#f3f4f6;
 }
 
-/* A4 SAFE */
+/* CONTAINER */
 .container{
-  width:100%;
-  max-width:800px;
+  max-width:900px;
   margin:auto;
   background:#fff;
   display:flex;
+  min-height:100vh;
 }
 
-/* LEFT PANEL */
+/* SIDEBAR */
 .sidebar{
   width:32%;
-  background:#1e293b;
+  background:linear-gradient(180deg,#1e293b,#0f172a);
   color:#fff;
-  padding:28px 22px;
+  padding:28px 20px;
 }
 
 .sidebar h2{
-  margin-bottom:6px;
+  margin:0;
   font-size:22px;
 }
 
 .sidebar p{
   font-size:13px;
-  line-height:1.6;
-  margin:2px 0;
+  margin:4px 0;
+  opacity:0.9;
 }
 
-.section-title{
-  margin-top:24px;
-  font-size:13px;
+.section{
+  margin-top:22px;
+}
+
+.section h4{
+  font-size:12px;
   letter-spacing:1px;
   text-transform:uppercase;
-  border-bottom:1px solid rgba(255,255,255,0.25);
+  border-bottom:1px solid rgba(255,255,255,0.3);
   padding-bottom:4px;
+  margin-bottom:8px;
 }
 
-/* RIGHT PANEL */
+.tag{
+  display:inline-block;
+  background:#334155;
+  padding:4px 8px;
+  margin:3px;
+  border-radius:6px;
+  font-size:11px;
+}
+
+/* MAIN */
 .main{
   width:68%;
-  padding:32px 36px;
+  padding:30px 34px;
 }
 
+/* HEADER */
 .name{
   font-size:26px;
   font-weight:600;
@@ -63,19 +76,27 @@ body{
 .role{
   color:#2563eb;
   font-size:15px;
+  margin-bottom:12px;
+}
+
+.summary{
+  font-size:13px;
+  color:#374151;
+  margin-bottom:18px;
+  line-height:1.5;
+}
+
+/* BLOCKS */
+.block{
   margin-bottom:18px;
 }
 
-.block{
-  margin-bottom:20px;
-}
-
 .block h3{
-  font-size:15px;
+  font-size:14px;
   color:#1e293b;
   border-bottom:2px solid #e5e7eb;
-  padding-bottom:4px;
   margin-bottom:10px;
+  padding-bottom:4px;
 }
 
 .item{
@@ -84,7 +105,7 @@ body{
 
 .item-title{
   font-weight:600;
-  font-size:14px;
+  font-size:13px;
 }
 
 .item-sub{
@@ -92,14 +113,10 @@ body{
   color:#6b7280;
 }
 
-ul{
-  padding-left:16px;
-  margin-top:6px;
-}
-
-li{
-  margin-bottom:5px;
-  font-size:13px;
+.item p{
+  font-size:12px;
+  margin-top:4px;
+  color:#374151;
 }
 
 </style>
@@ -113,41 +130,47 @@ li{
   <div class="sidebar">
 
     <% if(name){ %><h2><%= name %></h2><% } %>
+    <% if(title){ %><p><%= title %></p><% } %>
     <% if(email){ %><p><%= email %></p><% } %>
     <% if(phone){ %><p><%= phone %></p><% } %>
     <% if(location){ %><p><%= location %></p><% } %>
 
     <% if (skills && skills.length) { %>
-      <div class="section-title">Skills</div>
-      <ul>
-        <% skills.forEach(skill=>{ %>
-          <li><%= skill %></li>
-        <% }) %>
-      </ul>
+    <div class="section">
+      <h4>Skills</h4>
+      <% skills.forEach(skill=>{ %>
+        <span class="tag"><%= skill %></span>
+      <% }) %>
+    </div>
     <% } %>
 
     <% if (languages && languages.length) { %>
-      <div class="section-title">Languages</div>
+    <div class="section">
+      <h4>Languages</h4>
+      <% languages.forEach(lang=>{ %>
+        <span class="tag"><%= lang %></span>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <% if (achievements && achievements.length) { %>
+    <div class="section">
+      <h4>Achievements</h4>
       <ul>
-        <% languages.forEach(lang=>{ %>
-          <li><%= lang %></li>
+        <% achievements.forEach(a=>{ %>
+          <li style="font-size:12px;"><%= a %></li>
         <% }) %>
       </ul>
+    </div>
     <% } %>
 
   </div>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN -->
   <div class="main">
 
-    <% if(name){ %><div class="name"><%= name %></div><% } %>
-    <% if(title){ %><div class="role"><%= title %></div><% } %>
-
-    <% if(summary){ %>
-    <div class="block">
-      <h3>Professional Summary</h3>
-      <p><%= summary %></p>
-    </div>
+    <% if(bio){ %>
+    <div class="summary"><%= bio %></div>
     <% } %>
 
     <% if (experience && experience.length) { %>
@@ -155,39 +178,17 @@ li{
       <h3>Experience</h3>
       <% experience.forEach(exp=>{ %>
         <div class="item">
-          <% if(exp.company || exp.role){ %>
           <div class="item-title">
-            <%= exp.company || "" %> <% if(exp.company && exp.role){ %>–<% } %> <%= exp.role || "" %>
+            <%= exp.company || "" %> 
+            <% if(exp.company && exp.role){ %>–<% } %> 
+            <%= exp.role || "" %>
           </div>
-          <% } %>
-
-          <% if(exp.duration){ %>
-          <div class="item-sub"><%= exp.duration %></div>
-          <% } %>
+          <div class="item-sub"><%= exp.duration || "" %></div>
 
           <% if(exp.description){ %>
           <p><%= exp.description %></p>
-          <% } %>
-        </div>
-      <% }) %>
-    </div>
-    <% } %>
-
-    <% if (education && education.length) { %>
-    <div class="block">
-      <h3>Education</h3>
-      <% education.forEach(edu=>{ %>
-        <div class="item">
-          <% if(edu.degree){ %>
-          <div class="item-title"><%= edu.degree %></div>
-          <% } %>
-
-          <% if(edu.college || edu.year){ %>
-          <div class="item-sub">
-            <%= edu.college || "" %>
-            <% if(edu.college && edu.year){ %>|<% } %>
-            <%= edu.year || "" %>
-          </div>
+          <% } else { %>
+          <p>Worked on various responsibilities and contributed to team success.</p>
           <% } %>
         </div>
       <% }) %>
@@ -199,13 +200,36 @@ li{
       <h3>Projects</h3>
       <% projects.forEach(p=>{ %>
         <div class="item">
-          <% if(p.name){ %>
           <div class="item-title"><%= p.name %></div>
-          <% } %>
+          <p><%= p.description || "Project implementation and development work." %></p>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
 
-          <% if(p.description){ %>
-          <p><%= p.description %></p>
-          <% } %>
+    <% if (education && education.length) { %>
+    <div class="block">
+      <h3>Education</h3>
+      <% education.forEach(edu=>{ %>
+        <div class="item">
+          <div class="item-title"><%= edu.degree %></div>
+          <div class="item-sub">
+            <%= edu.college || "" %> 
+            <% if(edu.college && edu.year){ %>|<% } %> 
+            <%= edu.year || "" %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <% if (certifications && certifications.length) { %>
+    <div class="block">
+      <h3>Certifications</h3>
+      <% certifications.forEach(c=>{ %>
+        <div class="item">
+          <div class="item-title"><%= c.title %></div>
+          <div class="item-sub"><%= c.issuer %> - <%= c.year %></div>
         </div>
       <% }) %>
     </div>

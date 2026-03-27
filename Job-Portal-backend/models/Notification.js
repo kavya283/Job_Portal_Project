@@ -42,10 +42,15 @@ const notificationSchema = new mongoose.Schema(
         "STATUS_UPDATE",
         "NEW_JOB",
         "APPLICATION_RECEIVED",
-        "APPLICATION_SUBMITTED"
+        "APPLICATION_SUBMITTED",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_ACCEPTED",
+        "INTERVIEW_DECLINED",
+        "OFFER_SENT",
+        "OFFER_ACCEPTED",
+        "OFFER_REJECTED"
       ],
-      required: true,
-      index: true,
+      required: true
     },
 
     isRead: {

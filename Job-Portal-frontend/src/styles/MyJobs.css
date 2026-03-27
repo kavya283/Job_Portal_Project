@@ -191,3 +191,33 @@ body.dark {
   border: 2px dashed var(--border); /* Uses variable */
   color: var(--muted);
 }
+.assessment-info{
+font-size:13px;
+margin-top:5px;
+color:#6366f1;
+font-weight:500;
+}
+
+.interview-info{
+font-size:13px;
+color:#10b981;
+margin-bottom:10px;
+}
+
+.assessment-btn{
+background:#6366f1;
+color:white;
+border:none;
+padding:7px 12px;
+border-radius:8px;
+cursor:pointer;
+font-size:13px;
+margin-left:6px;
+font-weight:600;
+transition:0.3s;
+}
+
+.assessment-btn:hover{
+background:#4f46e5;
+transform:translateY(-1px);
+}

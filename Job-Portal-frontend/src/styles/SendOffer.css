@@ -1,0 +1,73 @@
+.offer-page {
+  padding: 30px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #fff;
+}
+
+/* HEADER */
+.offer-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.offer-header button {
+  background: transparent;
+  border: 1px solid #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* LAYOUT */
+.offer-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* GLASS */
+.glass {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* FORM */
+.offer-form input {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.send-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(45deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* PREVIEW */
+.offer-preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-card {
+  margin-top: 15px;
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 10px;
+}

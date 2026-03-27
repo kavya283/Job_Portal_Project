@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Offer Letter</title>
+</head>
+
+<body style="margin:0; padding:0; font-family: Arial, sans-serif; background:#f4f6f8;">
+
+  <div style="max-width:600px; margin:30px auto; background:#ffffff; padding:30px; border-radius:12px; box-shadow:0 5px 20px rgba(0,0,0,0.08);">
+
+    <!-- HEADER -->
+    <div style="text-align:center;">
+      <h2 style="color:#16a34a; margin-bottom:10px;">
+        🎉 Congratulations!
+      </h2>
+      <p style="color:#64748b; font-size:14px;">
+        Your journey with us begins here 🚀
+      </p>
+    </div>
+
+    <hr style="margin:20px 0;" />
+
+    <!-- CONTENT -->
+    <p style="font-size:16px;">
+      Hello <b><%= candidateName || "Candidate" %></b>,
+    </p>
+
+    <p style="font-size:15px; line-height:1.6;">
+      We are excited to offer you the position of  
+      <b style="color:#1e293b;">
+        <%= jobTitle || "Software Developer" %>
+      </b>  
+      at  
+      <b style="color:#2563eb;">
+        <%= companyName || "Our Company" %>
+      </b>.
+    </p>
+
+    <p style="font-size:15px; line-height:1.6;">
+      Your performance throughout the hiring process has been exceptional,
+      and we are confident that you will be a valuable addition to our team.
+    </p>
+
+    <!-- OFFER BOX -->
+    <div style="background:#f1f5f9; padding:15px; border-radius:10px; margin:20px 0;">
+      <p style="margin:0; font-size:14px;">
+        📎 <b>Your official Offer Letter is attached with this email.</b>
+      </p>
+    </div>
+
+    <!-- CTA BUTTON -->
+    <% if (portalLink) { %>
+    <div style="text-align:center; margin:25px 0;">
+      <a href="<%= portalLink %>" 
+         style="background:#16a34a; color:#fff; padding:12px 20px; text-decoration:none; border-radius:8px; font-size:14px;">
+        View Dashboard
+      </a>
+    </div>
+    <% } %>
+
+    <!-- FOOTER -->
+    <p style="margin-top:20px;">
+      Welcome aboard! 🎉<br/>
+      <b><%= companyName || "Team" %></b>
+    </p>
+
+    <hr style="margin:25px 0;" />
+
+    <p style="font-size:12px; color:#94a3b8; text-align:center;">
+      This is an automated email. Please do not reply.
+    </p>
+
+  </div>
+
+</body>
+</html>

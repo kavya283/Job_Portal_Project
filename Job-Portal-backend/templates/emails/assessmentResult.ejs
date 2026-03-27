@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: Arial; background:#f4f6f8; padding:20px; }
+    .card {
+      background:#fff;
+      padding:25px;
+      border-radius:10px;
+      max-width:600px;
+      margin:auto;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+    h2 { color:#4f46e5; }
+    .result {
+      padding:15px;
+      border-radius:8px;
+      margin:15px 0;
+      text-align:center;
+      font-size:18px;
+      font-weight:bold;
+    }
+    .pass { background:#dcfce7; color:#166534; }
+    .fail { background:#fee2e2; color:#991b1b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <h2>📝 Assessment Result</h2>
+
+    <p>Hello <b><%= name %></b>,</p>
+
+    <p>Your assessment has been evaluated.</p>
+
+    <div class="result <%= status === 'pass' ? 'pass' : 'fail' %>">
+      You <%= status.toUpperCase() %> <br/>
+      Score: <%= score %> / <%= totalQuestions %>
+    </div>
+
+    <p>Job Role: <b><%= jobTitle %></b></p>
+
+    <p>
+      Visit your dashboard:
+      <a href="<%= portalLink %>">View Details</a>
+    </p>
+
+    <p>Best regards,<br/>Job Portal Team</p>
+
+  </div>
+</body>
+</html>

@@ -10,60 +10,92 @@ const uploadResume = require("../middleware/uploadMiddleware");
 /* ======================
    APPLY TO JOB
    ====================== */
-router.post("/", authMiddleware, uploadResume.single("resume"), async (req, res) => {
-  try {
-    const { jobId } = req.body;
+router.post(
+  "/",
+  authMiddleware,
+  (req, res, next) => {
+    uploadResume.single("resume")(req, res, function (err) {
+      if (err) {
+        console.error("Multer Error:", err.message);
+        return res.status(400).json({ message: err.message });
+      }
+      next();
+    });
+  },
+  async (req, res) => {
+    try {
+      console.log("BODY:", req.body);
+      console.log("FILE:", req.file);
 
-    if (!jobId || !req.file) {
-      return res.status(400).json({ message: "Job ID and resume required" });
+      const { jobId } = req.body;
+
+      if (!jobId) {
+        return res.status(400).json({ message: "Job ID required" });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ message: "Resume file is required" });
+      }
+
+      const job = await Job.findById(jobId).populate(
+        "employer",
+        "email companyName"
+      );
+
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+
+      const resumePath = `/uploads/resumes/${req.file.filename}`;
+
+      const newApp = await Application.create({
+        job: jobId,
+        candidate: req.user.id,
+        employer: job.employer._id,
+        resume: resumePath,
+      });
+
+      /* ================= 🔥 FIXED EMAIL + NOTIFICATION ================= */
+      const io = req.app.get("socketio");
+
+      console.log("📧 Employer Email:", job.employer.email);
+
+      await createAndSendNotification(io, {
+        recipientId: job.employer._id,
+        recipientEmail: job.employer.email,
+        senderId: req.user.id,
+        jobId: job._id,
+
+        // ✅ FIXED TYPE (IMPORTANT)
+        type: "APPLICATION_RECEIVED",
+
+        message: "📩 New application received",
+
+        sendEmail: true,
+
+        // ✅ SUBJECT
+        subject: "📩 New Application Received",
+
+        // ✅ USE YOUR EXISTING TEMPLATE
+        template: "applicationReceived",
+
+        // ✅ DATA FOR TEMPLATE
+        name: job.employer.companyName || "Employer",
+        candidateName: req.user.name || "Candidate",
+        jobTitle: job.title,
+        companyName: job.companyName,
+
+        portalLink: "http://localhost:3000/employer/dashboard",
+      });
+
+      res.status(201).json(newApp);
+
+    } catch (err) {
+      console.error("Application Error:", err);
+      res.status(500).json({ message: err.message });
     }
-
-    const job = await Job.findById(jobId).populate("employer", "email companyName");
-    if (!job) return res.status(404).json({ message: "Job not found" });
-
-    const resumePath = `/uploads/resumes/${req.file.filename}`;
-
-    const newApp = await Application.create({
-      job: jobId,
-      candidate: req.user.id,
-      resume: resumePath,
-    });
-
-    const io = req.app.get("socketio");
-
-    // Notify Employer
-    await createAndSendNotification(io, {
-      recipientId: job.employer._id,
-      recipientRole: "employer",
-      recipientEmail: job.employer.email,
-      message: `New candidate applied for ${job.title}`,
-      type: "APPLICATION_RECEIVED",
-      jobId: job._id,
-      senderId: req.user.id,
-      jobTitle: job.title,
-      companyName: job.employer.companyName,
-    });
-
-    // Notify Candidate
-    await createAndSendNotification(io, {
-      recipientId: req.user.id,
-      recipientRole: "candidate",
-      recipientEmail: req.user.email,
-      message: `You successfully applied for ${job.title}`,
-      type: "APPLICATION_SUBMITTED",
-      jobId: job._id,
-      senderId: job.employer._id,
-      jobTitle: job.title,
-      companyName: job.employer.companyName,
-    });
-
-    res.status(201).json(newApp);
-  } catch (err) {
-    console.error("Application Error:", err);
-    res.status(500).json({ message: err.message });
   }
-});
-
+);
 
 /* ======================
    GET MY APPLICATIONS
@@ -77,6 +109,30 @@ router.get("/my", authMiddleware, async (req, res) => {
     res.json(apps);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch applications" });
+  }
+});
+/* ======================
+   GET APPLICATION BY ID
+   ====================== */
+router.get("/:id", authMiddleware, async (req, res) => {
+  try {
+
+    const application = await Application.findById(req.params.id)
+      .populate("candidate", "name email")
+      .populate("job", "title")
+      .populate("employer", "email companyName name")
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    res.json(application);
+
+  } catch (err) {
+
+    console.error("Application Fetch Error:", err);
+    res.status(500).json({ message: "Failed to fetch application" });
+
   }
 });
 
