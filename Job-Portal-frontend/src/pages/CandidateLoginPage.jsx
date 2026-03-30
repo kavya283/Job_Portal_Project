@@ -12,31 +12,43 @@ const CandidateLoginPage = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const res = await api.post("/auth/login", {
-        email,
-        password,
-        role: "candidate",
-      });
+  try {
+    const res = await api.post("/auth/login", {
+      email,
+      password,
+      role: "candidate",
+    });
 
-      const { token, user } = res.data;
+    const { token, user } = res.data;
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.user.role); // 🔥 REQUIRED
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    // ✅ 🔥 NORMALIZE USER ID (CRITICAL FIX)
+    const safeUser = {
+      ...user,
+      _id: user._id || user.id, // handle both cases
+    };
 
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    // ✅ STORE CLEAN DATA
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", safeUser.role);
+    localStorage.setItem("user", JSON.stringify(safeUser));
 
-      navigate("/candidate/home");
-    } catch (error) {
-      alert(error.response?.data?.message || "Login failed");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    // ✅ SET AUTH HEADER
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    console.log("✅ Logged in user:", safeUser); // debug
+
+    navigate("/candidate/home");
+
+  } catch (error) {
+    console.error("Login error:", error);
+    alert(error.response?.data?.message || "Login failed");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="login-wrapper">

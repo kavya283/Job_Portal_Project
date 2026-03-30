@@ -11,10 +11,7 @@ const {
   rejectOffer,
 } = require("../controllers/offerController");
 
-const {
-  authMiddleware,
-  employerOnly,
-} = require("../middleware/authMiddleware");
+const { authMiddleware, employerOnly } = require("../middleware/authMiddleware");
 
 /* ===========================
    CREATE OFFER
@@ -27,14 +24,19 @@ router.post("/", authMiddleware, employerOnly, createOffer);
 router.put("/complete/:id", authMiddleware, employerOnly, completeInterview);
 
 /* ===========================
-   GET CANDIDATE OFFERS
+   GET LOGGED-IN USER OFFERS
+=========================== */
+router.get("/candidate/me", authMiddleware, getCandidateOffers);
+
+/* ===========================
+   GET OFFERS BY CANDIDATE ID
 =========================== */
 router.get("/candidate/:candidateId", authMiddleware, getCandidateOffers);
 
 /* ===========================
-   DOWNLOAD PDF
+   DOWNLOAD / GENERATE PDF
 =========================== */
-router.get("/generate/:id", generateOfferPDF);
+router.get("/generate/:id", authMiddleware, generateOfferPDF);
 
 /* ===========================
    GET SINGLE OFFER
@@ -42,7 +44,7 @@ router.get("/generate/:id", generateOfferPDF);
 router.get("/:id", getOfferById);
 
 /* ===========================
-   ACCEPT / REJECT
+   ACCEPT / REJECT OFFER
 =========================== */
 router.put("/:id/accept", authMiddleware, acceptOffer);
 router.put("/:id/reject", authMiddleware, rejectOffer);

@@ -7,29 +7,29 @@ const OfferLetterPage = () => {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [successId, setSuccessId] = useState(null);
+  const [downloadingId, setDownloadingId] = useState(null);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  /* ================= FETCH ================= */
+  /* ================= FETCH OFFERS ================= */
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        if (!user?._id) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          console.warn("❌ No token found");
           setLoading(false);
           return;
         }
-        console.log("🔍 Fetching offers for:", user._id);
 
-        const res = await api.get(`/offers/candidate/${user._id}`, {
+        const res = await api.get("/offers/candidate/me", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ FIX
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log("📦 Offers API response:", res.data);
+        console.log("📦 Offers:", res.data);
 
-        setOffers(Array.isArray(res.data) ? res.data : []); // ✅ SAFE FIX
-
+        setOffers(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error("❌ Fetch offers error:", err);
         setOffers([]);
@@ -40,6 +40,7 @@ const OfferLetterPage = () => {
 
     fetchOffers();
   }, []);
+
   /* ================= ACCEPT ================= */
   const handleAccept = async (id) => {
     try {
@@ -55,7 +56,7 @@ const OfferLetterPage = () => {
 
       setTimeout(() => setSuccessId(null), 2000);
     } catch (err) {
-      console.error(err);
+      console.error("❌ Accept error:", err);
     }
   };
 
@@ -70,9 +71,47 @@ const OfferLetterPage = () => {
         )
       );
     } catch (err) {
-      console.error(err);
+      console.error("❌ Reject error:", err);
     }
   };
+ const handleDownload = async (offerId, jobTitle) => {
+  try {
+    setDownloadingId(offerId);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("❌ You are not logged in");
+      setDownloadingId(null);
+      return;
+    }
+
+    const res = await fetch(`http://localhost:5000/api/offers/generate/${offerId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) alert("❌ PDF not found. Please contact admin.");
+      else alert("❌ Failed to download PDF.");
+      setDownloadingId(null);
+      return;
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${jobTitle || "OfferLetter"}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+  } catch (err) {
+    console.error("❌ Download error:", err);
+    alert("❌ Something went wrong while downloading PDF.");
+  } finally {
+    setDownloadingId(null);
+  }
+};
 
   /* ================= LOADING ================= */
   if (loading) {
@@ -87,6 +126,12 @@ const OfferLetterPage = () => {
   /* ================= UI ================= */
   return (
     <div className="offer-container">
+
+      {/* 🔙 BACK BUTTON */}
+      <button className="bck-btn" onClick={() => window.history.back()}>
+        ← Back
+      </button>
+
       <h2 className="offer-title">🎉 Your Offer Letters</h2>
 
       {offers.length === 0 ? (
@@ -104,17 +149,9 @@ const OfferLetterPage = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.05 }}
             >
-              {/* SUCCESS */}
               {successId === o._id && (
-                <motion.div
-                  className="success-overlay"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                >
-                  🎉 Accepted!
-                </motion.div>
+                <div className="success-overlay">🎉 Accepted!</div>
               )}
 
               {/* HEADER */}
@@ -127,7 +164,7 @@ const OfferLetterPage = () => {
 
               {/* DETAILS */}
               <div className="offer-details">
-                <p>💰 ₹{o.salary || "N/A"}</p>
+                <p>💰 <strong>₹{o.salary || "N/A"}</strong></p>
                 <p>
                   📅{" "}
                   {o.joiningDate
@@ -137,33 +174,33 @@ const OfferLetterPage = () => {
               </div>
 
               {/* ACTIONS */}
-              {["sent", "pending"].includes(o.status) && (
-                <div className="offer-actions">
-                  <button
-                    className="accept-btn"
-                    onClick={() => handleAccept(o._id)}
-                  >
-                    ✅ Accept
-                  </button>
+              <div className="offer-footer">
+                {["sent", "pending"].includes(o.status) && (
+                  <div className="offer-actions">
+                    <button
+                      className="accept-btn"
+                      onClick={() => handleAccept(o._id)}
+                    >
+                      Accept
+                    </button>
 
-                  <button
-                    className="reject-btn"
-                    onClick={() => handleReject(o._id)}
-                  >
-                    ❌ Reject
-                  </button>
-                </div>
-              )}
+                    <button
+                      className="reject-btn"
+                      onClick={() => handleReject(o._id)}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
 
-              {/* DOWNLOAD */}
-              <a
-                href={`http://localhost:5000/api/offers/generate/${o._id}`}
-                target="_blank"
-                rel="noreferrer"
-                className="download-btn"
-              >
-                📄 Download
-              </a>
+                <button
+                  className="download-btn"
+                  onClick={() => handleDownload(o._id, o.job?.title)}
+                  disabled={downloadingId === o._id} >
+                  {downloadingId === o._id ? "Downloading..." : "Download Offer"}
+                </button>
+
+              </div>
             </motion.div>
           ))}
         </div>

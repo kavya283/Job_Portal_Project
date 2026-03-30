@@ -177,7 +177,10 @@ exports.createAndSendNotification = async (io, data) => {
               email,
               data.subject || "Job Portal Notification",
               data.template || templateMap[notifType] || "applicationSubmitted",
-              emailData
+              {
+                ...emailData,
+                attachments: data.attachments || [] // ✅ PASS ATTACHMENTS
+              }
             )
           )
         );

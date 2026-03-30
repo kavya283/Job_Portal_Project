@@ -65,12 +65,13 @@ const sendEmail = async (to, subject, templateName, data = {}) => {
     const recipients = Array.isArray(to) ? to.join(",") : to;
 
     // ===== 8️⃣ SEND EMAIL =====
-    const info = await transporter.sendMail({
-      from: `"Job Portal" <${process.env.EMAIL_USER}>`,
-      to: recipients,
-      subject,
-      html,
-    });
+   const info = await transporter.sendMail({
+    from: `"Job Portal" <${process.env.EMAIL_USER}>`,
+    to: recipients,
+    subject,
+    html,
+    attachments: data.attachments || [], // ✅ FIX
+  });
 
     console.log("📧 Email sent:", info.response);
 
