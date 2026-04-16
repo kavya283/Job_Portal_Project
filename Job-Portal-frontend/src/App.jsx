@@ -8,8 +8,8 @@ import CandidateSignupPage from "./pages/CandidateSignupPage.jsx";
 
 /* ================= COMMON ================= */
 import Masterpage from "./pages/Masterpage.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import Navbar from "./components/Navbar.jsx";
+import ProtectedRoute from "./Components/ProtectedRoute.jsx";
+import Navbar from "./Components/Navbar.jsx";
 import LoginSuccess from "./pages/LoginSuccess.jsx";
 
 /* ================= CONTEXT ================= */
