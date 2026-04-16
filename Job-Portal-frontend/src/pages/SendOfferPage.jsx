@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import api from "../api/axios";
-import "../styles/sendOffer.css";
+import "../styles/SendOffer.css";
 
 const SendOfferPage = () => {
   const { state } = useLocation();
