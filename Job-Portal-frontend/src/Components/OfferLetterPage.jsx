@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import api from "../api/axios";
-import "../styles/offerLetter.css";
+import "../styles/OfferLetter.css";
 
 const OfferLetterPage = () => {
   const [offers, setOffers] = useState([]);
