@@ -10,7 +10,7 @@ import CandidateSignupPage from "./pages/CandidateSignupPage.jsx";
 import Masterpage from "./pages/Masterpage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
-import LoginSuccess from "./components/LoginSuccess.jsx";
+import LoginSuccess from "./pages/LoginSuccess.jsx";
 
 /* ================= CONTEXT ================= */
 import { NotificationProvider } from "./context/NotificationContext.jsx";
