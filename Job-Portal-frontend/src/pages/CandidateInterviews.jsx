@@ -35,74 +35,70 @@ const CandidateInterviews = () => {
   }, []);
 
   const handleRespond = async (id, response) => {
-  try {
-    console.log("📤 Sending response:", response);
+    try {
+      await api.put(`/interviews/${id}/respond`, {
+        status: response,
+      });
 
-    // ✅ FIXED: send status (not response)
-    await api.put(`/interviews/${id}/respond`, {
-      status: response,
-    });
-
-    // ✅ Update UI
-    setInterviews((prev) =>
-      prev.map((interview) =>
-        interview._id === id
-          ? {
-              ...interview,
-              candidateResponse:
-                response.charAt(0).toUpperCase() + response.slice(1),
-            }
-          : interview
-      )
-    );
-
-  } catch (err) {
-    console.error("❌ Respond interview error:", err.response?.data || err);
-  }
-};
+      setInterviews((prev) =>
+        prev.map((interview) =>
+          interview._id === id
+            ? {
+                ...interview,
+                candidateResponse:
+                  response.charAt(0).toUpperCase() + response.slice(1),
+              }
+            : interview
+        )
+      );
+    } catch (err) {
+      console.error("❌ Respond interview error:", err.response?.data || err);
+    }
+  };
 
   return (
     <div className="interview-page">
+      <div className="interview-container">
 
-      {/* HEADER */}
-      <div className="interview-header">
-        <h2>🎯 Your Scheduled Interviews</h2>
-        <p>
-          Manage and track all your upcoming interviews here.
-        </p>
+        {/* HEADER */}
+        <div className="interview-header">
+          <h2>🎯 Your Scheduled Interviews</h2>
+          <p>Manage and track all your upcoming interviews here.</p>
+        </div>
+
+        {/* LOADING */}
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+            <p>Loading interviews...</p>
+          </div>
+        ) : interviews.length === 0 ? (
+
+          /* EMPTY STATE */
+          <div className="no-interviews">
+            <div className="empty-icon">📭</div>
+            <h3>No Interviews Scheduled</h3>
+            <p>
+              Once recruiters schedule interviews, they will appear here.
+            </p>
+          </div>
+
+        ) : (
+
+          /* GRID */
+          <div className="interview-grid">
+            {interviews.map((item) => (
+              <InterviewCard
+                key={item._id}
+                interview={item}
+                onRespond={handleRespond}
+              />
+            ))}
+          </div>
+
+        )}
+
       </div>
-
-      {/* LOADING */}
-      {loading ? (
-        <div className="loader-container">
-          <div className="loader"></div>
-          <p>Loading interviews...</p>
-        </div>
-      ) : interviews.length === 0 ? (
-
-        /* EMPTY STATE */
-        <div className="no-interviews">
-          <div className="empty-icon">📭</div>
-          <h3>No Interviews Scheduled</h3>
-          <p>
-            Once recruiters schedule interviews, they will appear here.
-          </p>
-        </div>
-
-      ) : (
-
-        /* GRID */
-        <div className="interview-grid">
-          {interviews.map((item) => (
-            <InterviewCard
-              key={item._id}
-              interview={item}
-              onRespond={handleRespond}
-            />
-          ))}
-        </div>
-
-      )}
     </div>
   );
 };

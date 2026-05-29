@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import api from "../api/axios";
 import "../assets/index.css";
 import { FcGoogle } from "react-icons/fc";
@@ -12,106 +13,116 @@ const CandidateLoginPage = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  try {
-    const res = await api.post("/auth/login", {
-      email,
-      password,
-      role: "candidate",
-    });
+    try {
+      const res = await api.post("/auth/login", {
+        email,
+        password,
+        role: "candidate",
+      });
 
-    const { token, user } = res.data;
+      const { token, user } = res.data;
 
-    // ✅ 🔥 NORMALIZE USER ID (CRITICAL FIX)
-    const safeUser = {
-      ...user,
-      _id: user._id || user.id, // handle both cases
-    };
+      const safeUser = {
+        ...user,
+        _id: user._id || user.id,
+      };
 
-    // ✅ STORE CLEAN DATA
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", safeUser.role);
-    localStorage.setItem("user", JSON.stringify(safeUser));
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", safeUser.role);
+      localStorage.setItem("user", JSON.stringify(safeUser));
 
-    // ✅ SET AUTH HEADER
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-    console.log("✅ Logged in user:", safeUser); // debug
-
-    navigate("/candidate/home");
-
-  } catch (error) {
-    console.error("Login error:", error);
-    alert(error.response?.data?.message || "Login failed");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      navigate("/candidate/home");
+    } catch (error) {
+      alert(error.response?.data?.message || "Login failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="login-wrapper">
-      <div className="custom-card">
-        <h2 className="text-center mb-4">Job Seeker Login</h2>
+
+      <motion.div
+        className="custom-card"
+        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <motion.h2 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+          Job Seeker Login
+        </motion.h2>
 
         {/* OAuth */}
-        <div className="d-flex flex-column gap-2 mb-3">
-          <a
+        <motion.div
+          className="d-flex flex-column gap-2 mb-3"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.15 } }
+          }}
+        >
+          <motion.a
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             href="http://localhost:5000/api/auth/google"
             className="social-btn google-btn text-decoration-none"
           >
-            <span className="icon-circle">
-              <FcGoogle size={20} />
-            </span>
-            Continue with Google
-          </a>
+            <FcGoogle size={20} /> Continue with Google
+          </motion.a>
 
-          <a
+          <motion.a
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             href="http://localhost:5000/api/auth/linkedin"
             className="social-btn linkedin-btn text-decoration-none"
           >
-            <span className="icon-circle">
-              <FaLinkedin size={18} />
-            </span>
-            Continue with LinkedIn
-          </a>
-        </div>
+            <FaLinkedin size={18} /> Continue with LinkedIn
+          </motion.a>
+        </motion.div>
 
         <div className="divider">
           <span>Or continue with email</span>
         </div>
 
         <form onSubmit={handleLogin}>
-          <input
+          <motion.input
+            whileFocus={{ scale: 1.02 }}
             type="email"
-            required
             className="form-input mb-3"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            disabled={isSubmitting}
           />
 
-          <input
+          <motion.input
+            whileFocus={{ scale: 1.02 }}
             type="password"
-            required
             className="form-input mb-4"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            disabled={isSubmitting}
           />
 
-          <button type="submit" className="primary-btn" disabled={isSubmitting}>
+          <motion.button
+            type="submit"
+            className="primary-btn"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             {isSubmitting ? "Logging in..." : "Log in"}
-          </button>
+          </motion.button>
         </form>
 
-        <p className="text-center mt-3">
+        <p>
           New here? <Link to="/signup">Create account</Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };

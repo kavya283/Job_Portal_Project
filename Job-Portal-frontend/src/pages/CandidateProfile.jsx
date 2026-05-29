@@ -57,6 +57,28 @@ const CandidateProfile = () => {
 
     setResumeFile(file);
   };
+  
+  const handleDownload = async () => {
+    try {
+      const res = await api.get("/resume/download", {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "resume.pdf");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+    } catch (err) {
+      console.error("Download failed", err);
+      alert("❌ Download failed");
+    }
+  };
 
   // Save profile changes
   const handleSave = async () => {
@@ -227,7 +249,7 @@ const CandidateProfile = () => {
           {!isEditing && (
             <button
               className="resume-btn"
-              onClick={() => window.open("/api/resume/download")}
+              onClick={handleDownload}
             >
               📄 Download Resume
             </button>

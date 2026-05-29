@@ -27,8 +27,6 @@ const OfferLetterPage = () => {
           },
         });
 
-        console.log("📦 Offers:", res.data);
-
         setOffers(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error("❌ Fetch offers error:", err);
@@ -74,44 +72,66 @@ const OfferLetterPage = () => {
       console.error("❌ Reject error:", err);
     }
   };
- const handleDownload = async (offerId, jobTitle) => {
-  try {
-    setDownloadingId(offerId);
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("❌ You are not logged in");
-      setDownloadingId(null);
-      return;
+
+  /* ================= DELETE ================= */
+  const handleDelete = async (id) => {
+    try {
+      const confirmDelete = window.confirm("Are you sure you want to delete this offer?");
+      if (!confirmDelete) return;
+
+      await api.delete(`/offers/${id}`);
+
+      // Remove from UI instantly
+      setOffers((prev) => prev.filter((o) => o._id !== id));
+
+    } catch (err) {
+      console.error("❌ Delete error:", err);
+      alert("❌ Failed to delete offer");
     }
+  };
 
-    const res = await fetch(`http://localhost:5000/api/offers/generate/${offerId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  /* ================= DOWNLOAD ================= */
+  const handleDownload = async (offerId, jobTitle) => {
+    try {
+      setDownloadingId(offerId);
+      const token = localStorage.getItem("token");
 
-    if (!res.ok) {
-      if (res.status === 404) alert("❌ PDF not found. Please contact admin.");
-      else alert("❌ Failed to download PDF.");
+      if (!token) {
+        alert("❌ You are not logged in");
+        setDownloadingId(null);
+        return;
+      }
+
+      const res = await fetch(`http://localhost:5000/api/offers/generate/${offerId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        if (res.status === 404) alert("❌ PDF not found.");
+        else alert("❌ Failed to download PDF.");
+        setDownloadingId(null);
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = `${jobTitle || "OfferLetter"}.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (err) {
+      console.error("❌ Download error:", err);
+      alert("❌ Error downloading PDF.");
+    } finally {
       setDownloadingId(null);
-      return;
     }
-
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${jobTitle || "OfferLetter"}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-
-  } catch (err) {
-    console.error("❌ Download error:", err);
-    alert("❌ Something went wrong while downloading PDF.");
-  } finally {
-    setDownloadingId(null);
-  }
-};
+  };
 
   /* ================= LOADING ================= */
   if (loading) {
@@ -127,7 +147,6 @@ const OfferLetterPage = () => {
   return (
     <div className="offer-container">
 
-      {/* 🔙 BACK BUTTON */}
       <button className="bck-btn" onClick={() => window.history.back()}>
         ← Back
       </button>
@@ -175,6 +194,8 @@ const OfferLetterPage = () => {
 
               {/* ACTIONS */}
               <div className="offer-footer">
+
+                {/* Accept / Reject */}
                 {["sent", "pending"].includes(o.status) && (
                   <div className="offer-actions">
                     <button
@@ -193,12 +214,24 @@ const OfferLetterPage = () => {
                   </div>
                 )}
 
+                {/* Download */}
                 <button
                   className="download-btn"
                   onClick={() => handleDownload(o._id, o.job?.title)}
-                  disabled={downloadingId === o._id} >
+                  disabled={downloadingId === o._id}
+                >
                   {downloadingId === o._id ? "Downloading..." : "Download Offer"}
                 </button>
+
+                {/* 🗑️ Delete Button */}
+                {o.status !== "accepted" && (
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(o._id)}
+                  >
+                    🗑️ Delete
+                  </button>
+                )}
 
               </div>
             </motion.div>

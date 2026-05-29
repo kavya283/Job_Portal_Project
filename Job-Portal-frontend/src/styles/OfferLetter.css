@@ -12,22 +12,36 @@
   padding: 100px 60px;
   position: relative;
   z-index: 1;
+  overflow-x: hidden;
+
+  background: #f8fafc;
 }
 
-/* ================= BACKGROUND ================= */
+/* ================= BACKGROUND IMAGE ================= */
 .offer-container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+
+  background: url("../assets/background.jpg") center/cover no-repeat;
+  opacity: 0.05;
+
+  pointer-events: none;
+}
+
+/* ================= SOFT OVERLAY ================= */
+.offer-container::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
 
   background:
-    linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.96)),
-    url("../assets/background.jpg");
+    radial-gradient(circle at 20% 30%, rgba(99,102,241,0.05), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(236,72,153,0.05), transparent 40%);
 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 /* ================= BACK BUTTON ================= */
@@ -40,18 +54,19 @@
   border-radius: 12px;
   border: none;
 
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  font-size: 14px;
+  background: rgba(255,255,255,0.85);
+  color: #111827;
 
+  font-size: 14px;
   cursor: pointer;
+
   backdrop-filter: blur(10px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 
   transition: all 0.3s ease;
 }
 
 .bck-btn:hover {
-  background: rgba(255,255,255,0.3);
   transform: translateY(-2px);
 }
 
@@ -59,43 +74,44 @@
 .offer-title {
   text-align: center;
   font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 60px;
-  color: #fff;
+  font-weight: 800;
+  margin-bottom: 50px;
+  color: #1e293b;
 }
 
 /* ================= GRID ================= */
 .offer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  max-width: 1500px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  max-width: 1400px;
   margin: auto;
-  gap: 40px;
+  gap: 30px;
 }
 
 /* ================= CARD ================= */
 .offer-card {
   position: relative;
-
   display: flex;
   flex-direction: column;
 
-  min-height: 460px;
-  padding: 30px;
+  min-height: 440px;
+  padding: 25px;
 
-  border-radius: 24px;
+  border-radius: 20px;
 
-  background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
 
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 
-  transition: all 0.35s ease;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .offer-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 25px 60px rgba(99, 102, 241, 0.25);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(99,102,241,0.15);
 }
 
 /* subtle glow border */
@@ -103,8 +119,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 24px;
-  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 20px;
+  border: 1px solid rgba(99,102,241,0.15);
   pointer-events: none;
 }
 
@@ -116,20 +132,18 @@
 }
 
 .offer-header h3 {
-  font-size: 21px;
-  font-weight: 600;
-  color: #111827;
-  line-height: 1.4;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
   max-width: 70%;
 }
 
 /* ================= STATUS BADGE ================= */
 .status-badge {
-  padding: 6px 12px;
-  border-radius: 999px;
+  padding: 6px 14px;
+  border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
-  text-transform: capitalize;
 }
 
 .status-badge.sent {
@@ -138,51 +152,51 @@
 }
 .status-badge.accepted {
   background: #dcfce7;
-  color: #15803d;
+  color: #22c55e;
 }
 .status-badge.rejected {
   background: #fee2e2;
-  color: #b91c1c;
+  color: #ef4444;
 }
 
 /* ================= DETAILS ================= */
 .offer-details {
-  margin: 25px 0;
+  margin: 20px 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  color: #374151;
-  font-size: 15px;
+  gap: 10px;
+  color: #475569;
+  font-size: 14px;
 }
 
 .offer-details strong {
-  color: #111827;
+  color: #1e293b;
 }
 
 /* ================= FOOTER ================= */
 .offer-footer {
-  margin-top: auto; /* 🔥 pushes buttons to bottom */
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 /* ================= ACTION BUTTONS ================= */
 .offer-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .accept-btn,
 .reject-btn {
   flex: 1;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 11px;
+  border-radius: 10px;
   border: none;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: 0.25s;
 }
 
 /* Accept */
@@ -192,8 +206,8 @@
 }
 
 .accept-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.35);
 }
 
 /* Reject */
@@ -203,40 +217,52 @@
 }
 
 .reject-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.4);
-}
-
-.accept-btn:active,
-.reject-btn:active {
-  transform: scale(0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.35);
 }
 
 /* ================= DOWNLOAD BUTTON ================= */
 .download-btn {
   width: 100%;
-  padding: 14px;
-  border-radius: 14px;
+  padding: 13px;
+  border-radius: 12px;
   border: none;
 
-  background: linear-gradient(135deg, #6366f1, #4338ca);
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
   color: white;
 
   font-weight: 600;
-  text-align: center;
-  font-size: 15px;
+  font-size: 14px;
 
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: 0.25s;
 }
 
 .download-btn:hover {
-  transform: scale(1.04);
-  box-shadow: 0 8px 18px rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(99,102,241,0.3);
 }
 
-.download-btn:active {
-  transform: scale(0.95);
+/* ================= DELETE BUTTON ================= */
+.delete-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+
+  background: linear-gradient(135deg, #f87171, #dc2626);
+  color: white;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(239,68,68,0.3);
 }
 
 /* ================= SUCCESS OVERLAY ================= */
@@ -246,14 +272,14 @@
 
   background: rgba(34, 197, 94, 0.95);
   color: white;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 24px;
+  border-radius: 20px;
   z-index: 10;
 
   animation: pop 0.3s ease;
@@ -262,7 +288,7 @@
 @keyframes pop {
   from {
     opacity: 0;
-    transform: scale(0.6);
+    transform: scale(0.7);
   }
   to {
     opacity: 1;
@@ -274,20 +300,20 @@
 .offer-empty {
   text-align: center;
   margin-top: 80px;
-  color: #cbd5f5;
+  color: #6b7280;
 }
 
 .empty-icon {
-  font-size: 65px;
+  font-size: 60px;
   margin-bottom: 10px;
 }
 
 /* ================= LOADER ================= */
 .loader {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #ddd;
-  border-top: 5px solid #6366f1;
+  width: 45px;
+  height: 45px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #6366f1;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 40px auto;
@@ -321,4 +347,39 @@
     top: 12px;
     left: 12px;
   }
+}
+
+/* ================= DARK MODE ================= */
+body.dark .offer-container {
+  background: linear-gradient(120deg, #0b1220, #111827);
+}
+
+body.dark .offer-container::before {
+  opacity: 0.08;
+}
+
+body.dark .offer-container::after {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(99,102,241,0.12), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(236,72,153,0.12), transparent 40%),
+    linear-gradient(120deg, rgba(11,18,32,0.85), rgba(17,24,39,0.9));
+}
+
+body.dark .offer-card {
+  background: rgba(17, 24, 39, 0.85);
+  border: 1px solid #1f2937;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+body.dark .offer-details {
+  color: #cbd5e1;
+}
+
+body.dark .offer-title {
+  color: #f1f5f9;
+}
+
+body.dark .loader {
+  border: 4px solid #1f2937;
+  border-top: 4px solid #3b82f6;
 }

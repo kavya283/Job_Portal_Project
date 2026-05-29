@@ -1,127 +1,339 @@
-/* PAGE BACKGROUND */
-
-.interview-page{
-  min-height:100vh;
-  padding:40px;
-  background:linear-gradient(135deg,#f6f8fc,#eef2ff);
-  font-family: "Segoe UI", sans-serif;
+/* ================= GLOBAL ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
+/* ================= PAGE WRAPPER ================= */
+.interview-page {
+  min-height: 100vh;
+  padding: 60px 30px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden;
+  background: #f8fafc;
+  z-index: 0;
+}
+
+/* ================= BACKGROUND IMAGE ================= */
+.interview-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+
+  background: url("../assets/background.jpg") center/cover no-repeat;
+  opacity: 0.05;
+
+  pointer-events: none;
+}
+
+/* ================= SOFT OVERLAY ================= */
+.interview-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background:
+    radial-gradient(circle at 20% 30%, rgba(99,102,241,0.05), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(236,72,153,0.05), transparent 40%);
+
+  pointer-events: none;
+}
+
+/* ================= CONTAINER ================= */
+.interview-container {
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ================= HEADER ================= */
+.interview-header {
+  margin-bottom: 40px;
+}
+
+.interview-header h2 {
+  font-size: 30px;
+  font-weight: 800;
+  color: #1e293b;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.interview-header p {
+  color: #64748b;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+/* ================= GRID ================= */
+.interview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 25px;
+}
+
+/* ================= CARD ================= */
+.interview-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  padding: 25px;
+
+  backdrop-filter: blur(12px);
+
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle glow */
+.interview-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  border: 1px solid rgba(99,102,241,0.15);
+  pointer-events: none;
+}
+
+.interview-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(99,102,241,0.15);
+}
+
+/* ================= STATUS BADGE ================= */
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.status-badge.accepted {
+  background: #dcfce7;
+  color: #22c55e;
+}
+
+.status-badge.rejected {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.status-badge.expired {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+/* ================= DETAILS ================= */
+.interview-details {
+  margin-top: 15px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.interview-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.accept-btn,
+.reject-btn {
+  flex: 1;
+  padding: 11px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+/* Accept */
+.accept-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+
+.accept-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.35);
+}
+
+/* Reject */
+.reject-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.reject-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.35);
+}
+
+/* ================= EMPTY STATE ================= */
+.no-interviews {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 50px;
+  text-align: center;
+
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+
+  max-width: 500px;
+  margin: 60px auto;
+}
+
+.empty-icon {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.no-interviews h3 {
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.no-interviews p {
+  color: #64748b;
+}
+
+/* ================= LOADER ================= */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.loader {
+  width: 45px;
+  height: 45px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+
+.loader-container p {
+  color: #64748b;
+}
+
+/* ================= ANIMATION ================= */
+.interview-grid > div {
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .interview-page {
+    padding: 30px 15px;
+  }
+
+  .interview-header h2 {
+    font-size: 24px;
+  }
+
+  .interview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= DARK MODE ================= */
+body.dark .interview-page {
+  background: linear-gradient(120deg, #0b1220, #111827);
+}
+
+/* background image */
+body.dark .interview-page::before {
+  opacity: 0.08;
+}
+
+/* overlay darker */
+body.dark .interview-page::after {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(99,102,241,0.12), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(236,72,153,0.12), transparent 40%),
+    linear-gradient(120deg, rgba(11,18,32,0.85), rgba(17,24,39,0.9));
+}
 
 /* HEADER */
-
-.interview-header{
-  text-align:center;
-  margin-bottom:40px;
+body.dark .interview-header h2 {
+  color: #f1f5f9;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
 }
 
-.interview-header h2{
-  font-size:32px;
-  font-weight:700;
-  color:#333;
-  margin-bottom:8px;
+body.dark .interview-header p {
+  color: #94a3b8;
 }
 
-.interview-header p{
-  color:#777;
-  font-size:15px;
+/* CARD */
+body.dark .interview-card {
+  background: rgba(17, 24, 39, 0.85);
+  border: 1px solid #1f2937;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
-
-/* GRID */
-
-.interview-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
-  gap:25px;
+body.dark .interview-details {
+  color: #cbd5e1;
 }
 
-
-/* EMPTY STATE */
-
-.no-interviews{
-  background:white;
-  padding:60px;
-  border-radius:14px;
-  text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  max-width:500px;
-  margin:auto;
+/* EMPTY */
+body.dark .no-interviews {
+  background: rgba(17, 24, 39, 0.9);
+  border: 1px solid #1f2937;
 }
 
-.empty-icon{
-  font-size:60px;
-  margin-bottom:10px;
+body.dark .no-interviews h3 {
+  color: #f1f5f9;
 }
 
-.no-interviews h3{
-  font-size:22px;
-  margin-bottom:10px;
+body.dark .no-interviews p {
+  color: #94a3b8;
 }
-
-.no-interviews p{
-  color:#777;
-  font-size:14px;
-}
-
 
 /* LOADER */
-
-.loader-container{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  margin-top:80px;
+body.dark .loader {
+  border: 4px solid #1f2937;
+  border-top: 4px solid #3b82f6;
 }
 
-.loader{
-  width:45px;
-  height:45px;
-  border:4px solid #ddd;
-  border-top:4px solid #667eea;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin-bottom:10px;
-}
-
-@keyframes spin{
-  0%{transform:rotate(0deg)}
-  100%{transform:rotate(360deg)}
-}
-
-
-/* CARD ANIMATION */
-
-.interview-grid > div{
-  animation:fadeUp .4s ease;
-}
-
-@keyframes fadeUp{
-
-  from{
-    opacity:0;
-    transform:translateY(20px);
-  }
-
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-
-}
-
-
-/* RESPONSIVE */
-
-@media(max-width:768px){
-
-  .interview-page{
-    padding:20px;
-  }
-
-  .interview-header h2{
-    font-size:26px;
-  }
-
+body.dark .loader-container p {
+  color: #94a3b8;
 }

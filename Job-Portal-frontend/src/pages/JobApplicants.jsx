@@ -68,6 +68,20 @@ const JobApplicants = () => {
             const isOfferSent = status === "offer_sent";
             const isHired = status === "hired";
 
+            // ✅ Clean Logic Flags
+            const canScheduleInterview = ![
+              "interview_scheduled",
+              "offer_sent",
+              "hired",
+              "rejected",
+            ].includes(status);
+
+            const canSendOffer =
+              isPass &&
+              status === "interview_scheduled" &&
+              !isOfferSent &&
+              !isHired;
+
             return (
               <motion.div
                 key={app._id}
@@ -94,7 +108,8 @@ const JobApplicants = () => {
                 {/* ACTIONS */}
                 <div className="applicant-actions">
 
-                  {!["interview_scheduled", "hired", "rejected"].includes(status) && (
+                  {/* 📅 Schedule Interview */}
+                  {canScheduleInterview && (
                     <button
                       className="action-btn primary"
                       onClick={() => handleScheduleInterview(app)}
@@ -103,8 +118,8 @@ const JobApplicants = () => {
                     </button>
                   )}
 
-                  {/* ✅ FINAL OFFER BUTTON FIX */}
-                  {isPass && !isOfferSent && !isHired && (
+                  {/* 💼 Send Offer */}
+                  {canSendOffer && (
                     <button
                       className="action-btn success"
                       onClick={() => handleSendOffer(app)}
@@ -113,9 +128,11 @@ const JobApplicants = () => {
                     </button>
                   )}
 
+                  {/* ✅ Offer Sent */}
                   {isOfferSent && (
                     <span className="status-done">✅ Offer Sent</span>
                   )}
+
                 </div>
 
               </motion.div>
