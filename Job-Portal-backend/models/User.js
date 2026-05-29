@@ -28,19 +28,16 @@ const userSchema = new mongoose.Schema(
       enum: ["candidate", "employer"],
       default: null,
     },
-
     provider: {
       type: String,
       enum: ["local", "google", "linkedin"],
       default: "local",
     },
-
     googleId: {
       type: String,
       unique: true,
       sparse: true,
     },
-
     linkedinId: {
       type: String,
       unique: true,
@@ -49,5 +46,4 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 module.exports = mongoose.model("User", userSchema);

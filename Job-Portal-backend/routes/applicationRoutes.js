@@ -111,6 +111,25 @@ router.get("/my", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Failed to fetch applications" });
   }
 });
+
+/* ======================
+   GET APPLICATIONS FOR A JOB (EMPLOYER)
+====================== */
+router.get("/job/:jobId", authMiddleware, async (req, res) => {
+  try {
+    const applications = await Application.find({ job: req.params.jobId })
+      .populate("candidate", "name email")
+      .populate("job", "title companyName")
+      .sort({ createdAt: -1 });
+
+    res.json(applications);
+
+  } catch (err) {
+    console.error("Fetch Job Applications Error:", err);
+    res.status(500).json({ message: "Failed to fetch applications" });
+  }
+});
+
 /* ======================
    GET APPLICATION BY ID
    ====================== */

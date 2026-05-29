@@ -9,6 +9,7 @@ const {
   getOfferById,
   acceptOffer,
   rejectOffer,
+  deleteOffer,
 } = require("../controllers/offerController");
 
 const { authMiddleware, employerOnly } = require("../middleware/authMiddleware");
@@ -48,5 +49,8 @@ router.get("/:id", getOfferById);
 =========================== */
 router.put("/:id/accept", authMiddleware, acceptOffer);
 router.put("/:id/reject", authMiddleware, rejectOffer);
+
+router.delete("/:id", authMiddleware, deleteOffer);
+
 
 module.exports = router;

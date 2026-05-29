@@ -33,13 +33,15 @@ const generateStyledPDF = (filePath, data) => {
   doc.fontSize(12).fillColor("#374151").text(`Dear ${data.candidateName},`);
   doc.moveDown();
   doc.text(
-    `We are pleased to offer you the position of ${data.jobTitle} at ${data.companyName}. Based on your qualifications, we believe you will be a great addition to our team.`,
+    `We are pleased to offer you the position of ${data.jobTitle} at ${data.companyName}.`,
     { align: "justify", lineGap: 4 }
   );
+
   doc.moveDown();
 
   const boxY = doc.y;
   doc.rect(doc.x, boxY, 500, 95).fill("#f3f4f6").stroke();
+
   doc.fillColor("#111827").fontSize(12)
     .text(`Position: ${data.jobTitle}`, doc.x + 10, boxY + 10)
     .text(`Salary: ₹${data.salary}`, doc.x + 10, boxY + 30)
@@ -47,23 +49,12 @@ const generateStyledPDF = (filePath, data) => {
 
   doc.moveDown(6);
 
-  doc.fontSize(12).fillColor("#374151").text(
-    "This offer is subject to company policies and successful completion of onboarding formalities.",
-    { align: "justify" }
-  );
-  doc.moveDown();
-  doc.text("Please log in to the portal to accept or reject this offer.", { lineGap: 4 });
+  doc.text("We look forward to working with you!");
   doc.moveDown(2);
 
-  doc.fillColor("#111827").text("We look forward to working with you!");
-  doc.moveDown(2);
   doc.text("Sincerely,");
   doc.moveDown(1);
   doc.text(data.companyName);
-
-  doc.moveDown(2);
-  doc.moveTo(doc.x, doc.y).lineTo(doc.x + 200, doc.y).stroke();
-  doc.text("Authorized Signature");
 
   doc.end();
 
@@ -76,20 +67,55 @@ const generateStyledPDF = (filePath, data) => {
 const createOffer = async (req, res) => {
   try {
     const { candidate, job, salary, joiningDate } = req.body;
-    if (!candidate || !job) return res.status(400).json({ message: "Missing data" });
 
-    const application = await Application.findOne({ candidate, job })
+    if (!candidate || !job) {
+      return res.status(400).json({ message: "Missing data" });
+    }
+
+    console.log("📥 Incoming:", { candidate, job });
+
+    /* ✅ FIND APPLICATION */
+    let application = await Application.findOne({ candidate, job })
       .populate("candidate", "name email")
       .populate("job", "title companyName");
 
-    if (!application) return res.status(404).json({ message: "Application not found" });
+    if (!application) {
+      console.log("⚠️ Fallback search...");
+      application = await Application.findOne({ candidate })
+        .populate("candidate", "name email")
+        .populate("job", "title companyName");
+    }
 
-    let existing = await OfferLetter.findOne({ candidate, job });
-    if (existing) return res.status(400).json({ message: "Offer already exists" });
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
 
-    const offer = await OfferLetter.create({ candidate, job, salary, joiningDate, status: "sent" });
+    /* ✅ CHECK EXISTING OFFER */
+    const existing = await OfferLetter.findOne({
+      candidate: application.candidate._id,
+      job: application.job._id,
+    });
 
+    if (existing) {
+      return res.status(400).json({ message: "Offer already exists" });
+    }
+
+    /* ✅ CREATE OFFER */
+    const offer = await OfferLetter.create({
+      candidate: application.candidate._id,
+      job: application.job._id,
+      salary,
+      joiningDate,
+      status: "sent",
+    });
+
+    /* ✅ 🔥 UPDATE APPLICATION STATUS (MAIN FIX) */
+    application.status = "offer_sent";
+    await application.save();
+
+    /* ✅ CREATE PDF */
     if (!fs.existsSync("./offers")) fs.mkdirSync("./offers");
+
     const filePath = `./offers/offer-${offer._id}.pdf`;
 
     await generateStyledPDF(filePath, {
@@ -101,15 +127,17 @@ const createOffer = async (req, res) => {
       joiningDate: new Date(joiningDate).toDateString(),
     });
 
-    const io = req.app.get("socketio");
     offer.offerPDF = `offers/offer-${offer._id}.pdf`;
     await offer.save();
+
+    /* ✅ NOTIFICATION */
+    const io = req.app.get("socketio");
 
     await createAndSendNotification(io, {
       recipientId: application.candidate._id,
       recipientEmail: application.candidate.email,
       senderId: req.user._id,
-      jobId: job,
+      jobId: application.job._id,
       type: "OFFER_SENT",
       sendEmail: true,
       subject: "🎉 Offer Letter Received",
@@ -123,6 +151,7 @@ const createOffer = async (req, res) => {
     });
 
     res.json({ message: "Offer created & email sent", offer });
+
   } catch (err) {
     console.error("❌ Create Offer Error:", err);
     res.status(500).json({ message: "Failed to create offer" });
@@ -139,7 +168,6 @@ const completeInterview = async (req, res) => {
       populate: [
         { path: "candidate", select: "name email" },
         { path: "job", select: "title companyName" },
-        { path: "employer", select: "_id" },
       ],
     });
 
@@ -148,13 +176,29 @@ const completeInterview = async (req, res) => {
     interview.status = "completed";
     await interview.save();
 
-    const candidate = interview.application.candidate;
-    const job = interview.application.job;
+    const application = interview.application;
+
+    /* ✅ UPDATE STATUS */
+    application.status = "offer_sent";
+    await application.save();
+
+    const candidate = application.candidate;
+    const job = application.job;
 
     let offer = await OfferLetter.findOne({ candidate: candidate._id, job: job._id });
-    if (!offer) offer = await OfferLetter.create({ candidate: candidate._id, job: job._id, salary: "500000", joiningDate: new Date(), status: "sent" });
+
+    if (!offer) {
+      offer = await OfferLetter.create({
+        candidate: candidate._id,
+        job: job._id,
+        salary: "500000",
+        joiningDate: new Date(),
+        status: "sent",
+      });
+    }
 
     if (!fs.existsSync("./offers")) fs.mkdirSync("./offers");
+
     const filePath = `./offers/offer-${offer._id}.pdf`;
 
     await generateStyledPDF(filePath, {
@@ -166,46 +210,22 @@ const completeInterview = async (req, res) => {
       joiningDate: new Date().toDateString(),
     });
 
-    const io = req.app.get("socketio");
     offer.offerPDF = `offers/offer-${offer._id}.pdf`;
     await offer.save();
 
-    await createAndSendNotification(io, {
-      recipientId: candidate._id,
-      recipientEmail: candidate.email,
-      senderId: req.user._id,
-      jobId: job._id,
-      type: "OFFER_SENT",
-      sendEmail: true,
-      subject: "🎉 Offer Letter Received",
-      message: `🎉 Offer from ${job.companyName}`,
-      candidateName: candidate.name,
-      jobTitle: job.title,
-      companyName: job.companyName,
-      offer,
-      attachments: [{ filename: "OfferLetter.pdf", path: filePath }],
-      portalLink: "http://localhost:3000/dashboard",
-    });
-
     res.json({ message: "Interview completed & offer sent", interview, offer });
+
   } catch (err) {
     console.error("❌ Complete Interview Error:", err);
     res.status(500).json({ message: "Server Error" });
   }
 };
-
 /* =====================================================
-   GET CANDIDATE OFFERS (BY ID)
+   GET CANDIDATE OFFERS
 ===================================================== */
 const getCandidateOffers = async (req, res) => {
   try {
-    let candidateId = req.params.candidateId;
-
-    // If calling `/candidate/me`, use logged-in user
-    if (!candidateId && req.user) candidateId = req.user._id;
-
-    if (!mongoose.Types.ObjectId.isValid(candidateId))
-      return res.status(400).json({ message: "Invalid candidate ID" });
+    const candidateId = req.params.candidateId || req.user._id;
 
     const offers = await OfferLetter.find({ candidate: candidateId })
       .populate("job", "title companyName")
@@ -222,43 +242,117 @@ const getCandidateOffers = async (req, res) => {
    GET SINGLE OFFER
 ===================================================== */
 const getOfferById = async (req, res) => {
-  const offer = await OfferLetter.findById(req.params.id);
-  res.json(offer);
+  try {
+    const offer = await OfferLetter.findById(req.params.id);
+    res.json(offer);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching offer" });
+  }
 };
 
 /* =====================================================
-   ACCEPT / REJECT OFFER
+   ACCEPT OFFER
 ===================================================== */
 const acceptOffer = async (req, res) => {
-  const offer = await OfferLetter.findByIdAndUpdate(req.params.id, { status: "accepted" }, { new: true });
-  res.json(offer);
-};
+  try {
+    const offer = await OfferLetter.findByIdAndUpdate(
+      req.params.id,
+      { status: "accepted" },
+      { new: true }
+    );
 
-const rejectOffer = async (req, res) => {
-  const offer = await OfferLetter.findByIdAndUpdate(req.params.id, { status: "rejected" }, { new: true });
-  res.json(offer);
+    // 🔥 ALSO UPDATE APPLICATION STATUS
+    await Application.findOneAndUpdate(
+      { candidate: offer.candidate, job: offer.job },
+      { status: "hired" }
+    );
+
+    res.json(offer);
+  } catch (err) {
+    res.status(500).json({ message: "Error accepting offer" });
+  }
 };
 
 /* =====================================================
-   DOWNLOAD / GENERATE PDF
+   REJECT OFFER
+===================================================== */
+const rejectOffer = async (req, res) => {
+  try {
+    const offer = await OfferLetter.findByIdAndUpdate(
+      req.params.id,
+      { status: "rejected" },
+      { new: true }
+    );
+
+    await Application.findOneAndUpdate(
+      { candidate: offer.candidate, job: offer.job },
+      { status: "rejected" }
+    );
+
+    res.json(offer);
+  } catch (err) {
+    res.status(500).json({ message: "Error rejecting offer" });
+  }
+};
+
+/* =====================================================
+   DOWNLOAD PDF
 ===================================================== */
 const generateOfferPDF = async (req, res) => {
   try {
     const filePath = path.join(__dirname, "../offers", `offer-${req.params.id}.pdf`);
-    if (!fs.existsSync(filePath)) return res.status(404).json({ message: "PDF not found" });
 
-    res.download(filePath, `OfferLetter-${req.params.id}.pdf`, (err) => {
-      if (err) {
-        console.error("❌ Error sending PDF:", err);
-        if (!res.headersSent) res.status(500).json({ message: "Failed to download PDF" });
-      }
-    });
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "PDF not found" });
+    }
+
+    res.download(filePath, `OfferLetter-${req.params.id}.pdf`);
   } catch (err) {
-    console.error("❌ Generate PDF Error:", err);
+    res.status(500).json({ message: "Error downloading PDF" });
+  }
+};
+/* =====================================================
+   DELETE OFFER
+===================================================== */
+const deleteOffer = async (req, res) => {
+  try {
+    const offer = await OfferLetter.findById(req.params.id);
+
+    if (!offer) {
+      return res.status(404).json({ message: "Offer not found" });
+    }
+
+    // ❌ Prevent deleting accepted offers (best practice)
+    if (offer.status === "accepted") {
+      return res.status(400).json({ message: "Cannot delete accepted offer" });
+    }
+
+    // ✅ Delete PDF if exists
+    if (offer.offerPDF) {
+      const filePath = path.join(__dirname, "..", offer.offerPDF);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    // ✅ Delete offer
+    await offer.deleteOne();
+
+    // ✅ OPTIONAL: Reset application status
+    await Application.findOneAndUpdate(
+      { candidate: offer.candidate, job: offer.job },
+      { status: "interview_scheduled" } // or "applied" based on your flow
+    );
+
+    res.json({ message: "Offer deleted successfully" });
+
+  } catch (err) {
+    console.error("❌ Delete Offer Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+/* ===================================================== */
 module.exports = {
   createOffer,
   completeInterview,
@@ -267,5 +361,6 @@ module.exports = {
   acceptOffer,
   rejectOffer,
   generateOfferPDF,
-  generateStyledPDF, // exported for internal use
+  generateStyledPDF,
+  deleteOffer,
 };
